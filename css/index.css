@@ -73,7 +73,7 @@ header a:hover {
 
 /*show case*/
 #showcase{
-  min-height: 80vh;
+  min-height: 85vh;
   background: url('../images/thumbsup.jpg') no-repeat 0;
   background-size: cover;
 }
@@ -83,15 +83,20 @@ header a:hover {
   padding: 10px;
   float: left;
   text-align: center;
+  width: 60%
 }
 
 .showcase-box-2{
   float: right;
+  width: 30%;
+  text-align: center;
+  padding: 10px;
+  margin: auto;
   
 }
 
 #showcase h1{
-  margin-top: 200px;
+  margin-top: 150px;
   color: #4BB448;
   font-size: 3rem;
   margin-bottom: 0px;
@@ -116,12 +121,20 @@ header a:hover {
 }
 
 
+/*form showcase*/
+
 #form-container{
   background-color: rgba(75, 180, 72, 0.664);
   border-radius: 5px;
-  text-align: center;
-  padding: 80px 40px;
-  margin-top: 80px;
+  width: 100%;
+  margin-top: 150px;
+  
+}
+
+.form-content-home{
+  margin: 20px auto;
+  border-radius: 5px;
+  padding: 10px;
   
 }
 
@@ -136,13 +149,14 @@ header a:hover {
   height: 1.5rem;
   width: 80%;
   padding: 5px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   border-radius: 5px;
+  border: none;
 } 
 
 .btn1{
   height: 2rem;
-  width: 30%;
+  width: 40%;
   background: #fff;
   cursor: pointer;
   margin-top: 10px;
@@ -161,3 +175,49 @@ footer{
   border-top: 2px solid #fff
 }
 
+
+/*media queries*/
+@media(max-width: 960px){
+  header #logo,
+  header nav{
+    float: none; 
+    text-align: center;
+    width: 100%;
+  }
+
+  .showcase-box-1{
+    float:none;
+    width: 100%;
+
+  }
+
+  .showcase-box-2{
+    float: none;
+    width: 100%
+  }
+
+  #form-container{
+    margin-top: 50px;
+  }
+
+  #showcase h1{
+    margin-top: 50px;
+  }
+}
+
+@media(max-width :480px){
+   
+  #showcase h1{
+    font-size: 2rem;
+  }
+
+  #showcase h2{
+    font-size: 3rem;
+    
+  }
+
+  #showcase h3{
+    font-size: 2rem
+  }
+
+}
