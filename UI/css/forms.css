@@ -1,0 +1,40 @@
+main{
+    text-align: center;
+    min-height: 400px;
+}
+
+#form-container-1{
+    margin: 20px auto;
+    height: 72vh; 
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 80%;
+    padding: 10px;
+    
+}
+
+#form-container-1 h1,#form-container-1 h4 {
+    margin: 0;
+}
+
+.inputField{
+    height: 2rem;
+    width: 50%;
+    padding: 5px 15px;
+    margin: 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+}
+
+.btn2{
+    height: 2rem;
+    width: 30%;
+    background: #4BB448;
+    cursor: pointer;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0 20px;
+    border: none;
+}
