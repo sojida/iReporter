@@ -1,4 +1,4 @@
-main{
+#main-form{
     text-align: center;
     min-height: 400px;
 }
@@ -31,7 +31,7 @@ main{
 
 .btn2{
     height: 2rem;
-    width: 30%;
+    width: 40%;
     background: #4BB448;
     cursor: pointer;
     margin-top: 10px;
