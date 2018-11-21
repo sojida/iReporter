@@ -4,13 +4,15 @@ main{
 }
 
 #form-container-1{
+    height: 607px;    
+}
+
+#form-content{
     margin: 20px auto;
-    height: 72vh; 
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.2);
     width: 80%;
     padding: 10px;
-    
 }
 
 #form-container-1 h1,#form-container-1 h4 {
@@ -24,6 +26,7 @@ main{
     margin: 10px;
     border-radius: 5px;
     font-size: 1.2rem;
+    border: none;
 }
 
 .btn2{
@@ -37,4 +40,5 @@ main{
     text-transform: uppercase;
     padding: 0 20px;
     border: none;
+    text-align: center;
 }
