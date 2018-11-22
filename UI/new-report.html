@@ -22,7 +22,7 @@
 				<ul>
 					<li><a href="profile.html">All Reports</a></li>
 					<li><a href="myprofile.html">My Reports</a></li>
-					<li><a href="new-report.html">New Report</a></li>
+					<li><a href="new-report.html" class="current">New Report</a></li>
 				</ul>
 			</nav> 
 		</div>
@@ -39,6 +39,7 @@
                         <h4>Fill out this report form</h4>
 
                         <select name="incident" form="incident-form" required>
+                                <option disabled selected>Type of incident</option>
                                 <option value="Red-flag">Red-flag</option>
                                 <option value="intervention">Intervention</option>
                         </select>
@@ -46,16 +47,20 @@
                             
                             <input type="text" name="title" class="inputField" placeholder="Title" required><br>
 
-                            <textarea name="comment"  cols="30" rows="10" placeholder="Comment on incident"></textarea><br>                         
-                            <label>Location<br>
-                                <button>Get My Location</button>
-                                <input type="text" name="location" class="inputField" placeholder="Your Location">
+                            <textarea name="comment" placeholder="Comment on incident"></textarea><br>   
+
+                            <label >Location<br>
+                                <div class="location">
+                                    <button class="btn3">Get My Location</button>
+                                    <input type="text" name="location" class="inputField locate" placeholder="Your Location">
+                                </div>    
                             </label><br>
+
                             <label>Upload Images<br>
-                                <input type="file" name="image"  accept="image/*">
-                            </label><br>
+                                <input type="file" name="image" class="btn3" accept="image/*">
+                            </label><br><br>
                             <label>Upload Videos<br>
-                                <input type="file" name="video"  accept="video/*">
+                                <input type="file" name="video" class="btn3"  accept="video/*">
                             </label><br>
                             <input type="submit" value="Submit" class="btn2">
                         </form>
