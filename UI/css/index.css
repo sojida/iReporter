@@ -66,6 +66,10 @@ header nav{
   margin-top: 15px;
 }
 
+header .current{
+  border-bottom: 1px solid #ffffff;
+}
+
 header a:hover {
   border-bottom: 1px solid #ffffff;
 }
