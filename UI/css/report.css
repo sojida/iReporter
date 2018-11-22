@@ -3,22 +3,6 @@
     
 }
 
-div .report-card{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-    padding: 5px;
-    transition: 0.3s;
-    display: grid;
-    grid-template-areas: 
-        'title title status'
-        'comment comment comment'
-        'items items details';
-    grid-gap: 3px;
-    text-align: center;
-    color: #fff;
-    margin: 10px auto;
-}
-
 #legend{
     margin-top: 5px;
     text-align: center;
@@ -38,6 +22,28 @@ div .report-card{
     display: inline-block;
 }
 
+.report-title{grid-area: title}
+.report-status{grid-area: status}
+.report-comment{grid-area: comment}
+.report-items{grid-area: items}
+.report-details{grid-area: details}
+
+div .report-card{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    padding: 5px;
+    transition: 0.3s;
+    display: grid;
+    grid-template-areas: 
+        'title title status'
+        'comment comment comment'
+        'items items details';
+    grid-gap: 3px;
+    text-align: center;
+    color: #fff;
+    margin: 10px auto;
+}
+
 div .report-card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2)
 }
@@ -54,31 +60,20 @@ div .report-card:hover {
     background-color: rgba(236, 223, 29, 0.7)
 }
 
-.report-title{
-    grid-area: title
-}
-
-.report-status{
-    grid-area: status
-}
-
-.report-comment{
-    grid-area: comment
-}
-
-.report-items{
-    grid-area: items
-}
-
-.report-details{
-    grid-area: details
-}
-
 .tag{
     padding: 0px 5px;
     display: flex;
-    justify-content: space-between;
-    
+    justify-content: space-between;   
+}
+
+.report-options > button{
+   border: none;
+   font-size: 1rem;
+   margin: 3px;
+   padding: 5px;
+   border-radius: 5px;
+   cursor: pointer;
+   
 }
 
 
