@@ -18,7 +18,7 @@
 
 /**header**/
 header {
-  background: #BF8F30;
+  background: #24292E;
   color: #ffffff;
   padding-top: 30px;
   min-height: 70px;
@@ -100,13 +100,15 @@ header a:hover {
   color: #4BB448;
   font-size: 3rem;
   margin-bottom: 0px;
+  text-shadow: 2px 2px 4px #000000;
  
 }
 
 #showcase h2{
   font-size: 4.5rem;
   margin: 0 5px;
-  color: #ffffff
+  color: #ffffff;
+  text-shadow: 2px 2px 4px #000000;
 }
 
 #showcase h3{
@@ -114,6 +116,7 @@ header a:hover {
   color: #ffffff;
   margin: 0;
   color: #4BB448;
+  text-shadow: 2px 2px 4px #000000;
 }
 
 .danger{
@@ -128,6 +131,7 @@ header a:hover {
   border-radius: 5px;
   width: 100%;
   margin-top: 150px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   
 }
 
@@ -169,7 +173,7 @@ header a:hover {
 
 footer{
   color: #fff;
-  background-color: #BF8F30;
+  background-color: #24292E;
   padding: 1px;
   text-align:center;
   border-top: 2px solid #fff
