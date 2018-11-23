@@ -49,7 +49,7 @@
 
 select {
     height: 2rem;
-    width: 50%;
+    width: 53%;
     cursor: pointer;
     margin-top: 10px;
     border-radius: 5px;
@@ -75,6 +75,8 @@ textarea{
 
 }
 
+
+
 .btn3{
     padding: 10px;
     background: #24292E;
@@ -83,6 +85,7 @@ textarea{
     text-align: center;
     border:none;
     border-radius: 5px;
+    width: 50%;
 
 }
 
@@ -91,10 +94,10 @@ textarea{
 }
 
 
-
 label > .location{
     display: inline-block;
-    width: 100%
+    width: 100%;
+    margin: 0 auto;
 }
 
 #map{
@@ -102,3 +105,18 @@ label > .location{
     height: 30%;
     margin: auto;
 }
+
+@media(max-width: 475px){
+    .inputField{
+        font-size:1rem;
+    }
+
+    label > .location{
+        display: inline-block;
+        width: 100%;
+        margin: 5px
+    }
+
+
+}
+

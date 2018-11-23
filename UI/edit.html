@@ -7,7 +7,7 @@
 	<meta name="description" content="iReporter">
 	<meta name="keywords" content="anti-corruption, intervention, report, witness, corruption">
 	<meta name="author" content="Adesoji Daniel">
-	<title>iReporter | Create Report</title>
+	<title>iReporter | Edit Report</title>
     <link rel="stylesheet" type="text/css" href="./css/index.css">
     <link rel="stylesheet" type="text/css" href="./css/forms.css">
 </head>
@@ -22,7 +22,7 @@
 				<ul>
 					<li><a href="profile.html">All Reports</a></li>
 					<li><a href="myprofile.html">My Reports</a></li>
-					<li><a href="new-report.html" class="current">New Report</a></li>
+					<li><a href="new-report.html">New Report</a></li>
 				</ul>
 			</nav> 
 		</div>
@@ -35,15 +35,15 @@
 
             <div id="form-content">
 
-                <h1>Create Report </h1>
-                <h4>Fill out this report form</h4>
+                <h1>Edit Report </h1>
+               
 
                 <select name="incident" form="incident-form" required>
-                        <option disabled selected>Select type of incident</option>
+                        <option disabled>Type of incident</option>
                         <option value="Red-flag">Red-flag</option>
                         <option value="intervention">Intervention</option>
                 </select>
-                <form enctype="multipart/form-data" id="incident-form">
+                <form enctype="multipart/form-data" id="incident-form" >
                     
                     <input type="text" name="title" class="inputField" placeholder="Title" required><br>
 
@@ -62,7 +62,7 @@
                     <label>Upload Videos<br>
                         <input type="file" name="video" class="btn3"  accept="video/*">
                     </label><br>
-                    <input type="submit" value="Submit" class="btn2">
+                    <input type="submit" value="Update" class="btn2">
                 </form>
 
 
