@@ -20,7 +20,7 @@
 header {
   background: #24292E;
   color: #ffffff;
-  padding-top: 30px;
+  padding-top: 10px;
   min-height: 70px;
   border-bottom: 2px solid white;
     
@@ -77,7 +77,7 @@ header a:hover {
 
 /*show case*/
 #showcase{
-  min-height: 85vh;
+  min-height: 90vh;
   background: url('../images/thumbsup.jpg') no-repeat 0;
   background-size: cover;
 }
@@ -176,11 +176,12 @@ header a:hover {
 }
 
 footer{
-  color: #fff;
-  background-color: #24292E;
+  color: #24292E;
   padding: 1px;
   text-align:center;
-  border-top: 2px solid #fff
+  border-top: 2px solid #24292E;
+  width: 70%;
+  margin: 100px auto 0;
 }
 
 

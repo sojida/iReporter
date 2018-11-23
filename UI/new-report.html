@@ -29,45 +29,48 @@
 	</header>
 
 
-	<section>
+	<section id="main-form">
 		<div class="container">
 
-            <div id="form-container-1" class="report-form">
-                    <div id="form-content">
-    
-                        <h1>Create Report </h1>
-                        <h4>Fill out this report form</h4>
 
-                        <select name="incident" form="incident-form" required>
-                                <option disabled selected>Type of incident</option>
-                                <option value="Red-flag">Red-flag</option>
-                                <option value="intervention">Intervention</option>
-                        </select>
-                        <form enctype="multipart/form-data" id="incident-form">
-                            
-                            <input type="text" name="title" class="inputField" placeholder="Title" required><br>
+            <div id="form-content">
 
-                            <textarea name="comment" placeholder="Comment on incident"></textarea><br>   
+                <h1>Create Report </h1>
+                <h4>Fill out this report form</h4>
 
-                            <label >Location<br>
-                                <div class="location">
-                                    <button class="btn3">Get My Location</button>
-                                    <input type="text" name="location" class="inputField locate" placeholder="Your Location">
-                                </div>    
-                            </label><br>
+                <select name="incident" form="incident-form" required>
+                        <option disabled>Type of incident</option>
+                        <option value="Red-flag">Red-flag</option>
+                        <option value="intervention">Intervention</option>
+                </select>
+                <form enctype="multipart/form-data" id="incident-form">
+                    
+                    <input type="text" name="title" class="inputField" placeholder="Title" required><br>
 
-                            <label>Upload Images<br>
-                                <input type="file" name="image" class="btn3" accept="image/*">
-                            </label><br><br>
-                            <label>Upload Videos<br>
-                                <input type="file" name="video" class="btn3"  accept="video/*">
-                            </label><br>
-                            <input type="submit" value="Submit" class="btn2">
-                        </form>
-    
-    
-                    </div>      
-                </div>
+                    <textarea name="comment" placeholder="Comment on incident"></textarea><br>   
+
+                    <label >Location<br>
+                        <div class="location">
+                            <span id="geoLocate" class="btn3">Get This Location</span>
+                            <input type="text" name="location" class="inputField locate" id="locateField" placeholder="Your Location">
+                        </div>
+                    </label><br>
+
+                    <label>Upload Images<br>
+                        <input type="file" name="image" class="btn3" accept="image/*">
+                    </label><br><br>
+                    <label>Upload Videos<br>
+                        <input type="file" name="video" class="btn3"  accept="video/*">
+                    </label><br>
+                    <input type="submit" value="Submit" class="btn2">
+                </form>
+
+
+            </div>      
+        
+
+                <div id="map"></div>    
+
         
 			
 		</div>
@@ -77,6 +80,7 @@
 		<p>iReporter, Copyright &copy; 2018</p>
 	</footer>
 	
+<script src="./scripts/geolocation.js"></script>
 
 </body>
 </html>
