@@ -4,13 +4,12 @@ const location_field = document.getElementById('locateField')
 
 locate_btn.addEventListener('click', (e) => {
     e.preventDefault()
-    console.log(location_field.value)
     location_field.value = 'Locating...'
 
     function success(position){
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        location_field.value =`Latitude: ${latitude} Longitude: ${longitude}`
+        location_field.value =`Latitude: ${latitude.toFixed(6)} Longitude: ${longitude.toFixed(6)}`
 
         const latlon = latitude + "," + longitude;
 
