@@ -78,8 +78,8 @@
                     </div>
                     
                     <div class="report-options">
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button class="no"><a href="edit.html">Edit</a></button>
+                        <button class="modal-btn yes">Delete</button>
                     </div>
 				</div>
 				
@@ -111,8 +111,8 @@
                     </div>
                     
                     <div class="report-options">
-                        <button>Edit</button>
-                        <button>Delete</button>
+						<button class="no"><a href="edit.html">Edit</a></button>
+						<button class="modal-btn yes">Delete</button>
                     </div>
 				</div>
 
@@ -181,7 +181,15 @@
 	<footer>
 		<p>iReporter, Copyright &copy; 2018</p>
 	</footer>
-	
 
+	<div id="modal-view" class="modal">
+		<div class="modal-content">
+			<h3>Are you sure you want to delete this report?</h3>
+			<p><span class="yes">Yes</span> <span class="no">No</span> </p>
+		</div>
+
+	</div>
+	
+	<script src="./scripts/modal.js"></script>
 </body>
 </html>
