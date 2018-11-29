@@ -6,7 +6,9 @@
   "scripts": {
     "start": "babel-node app.js",
     "dev": "nodemon app.js --exec babel-watch",
-    "test": "mocha --require babel-register ./test/*.js --exit"
+    "test": "mocha --require babel-register ./test/*.js --exit",
+    "coverage": "nyc --reporter=html --reporter=text --reporter=lcov mocha --reporter spec --require babel-register ./test/*.js --exit",
+    "coveralls": "npm run coverage -- --report lcovonly && cat coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -32,8 +34,10 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-watch": "^2.0.7",
+    "coveralls": "^3.0.2",
     "eslint": "^5.9.0",
     "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "eslint-plugin-import": "^2.14.0",
+    "nyc": "^13.1.0"
   }
 }
