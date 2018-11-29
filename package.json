@@ -1,0 +1,25 @@
+{
+  "name": "ireporter",
+  "version": "1.0.0",
+  "description": "An anti-corruption movement",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sojida/iReporter.git"
+  },
+  "keywords": [
+    "anti-corruption"
+  ],
+  "author": "Adesoji Daniel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sojida/iReporter/issues"
+  },
+  "homepage": "https://github.com/sojida/iReporter#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
