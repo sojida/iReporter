@@ -38,5 +38,26 @@ export default {
     return report;
   },
 
+  changeProperty: (db, req, property) => {
+    const reportStatus = {
+      found: false,
+      changed: false,
+    };
+
+    const record = db.find(item => item.id === parseFloat(req.params.id));
+
+    if (record) {
+      reportStatus.found = true;
+    } else {
+      return reportStatus;
+    }
+
+    if (record.status === 'draft') {
+      record[property] = req.body[property];
+      reportStatus.changed = true;
+    }
+    return reportStatus;
+  },
+
 
 };
