@@ -18,4 +18,7 @@ router.patch('/:incidentType/:id/location', incidents.patchLocation);
 // patch incident comment
 router.patch('/:incidentType/:id/comment', incidents.patchComment);
 
+// delete incident
+router.delete('/:incidentType/:id', incidents.deleteIncident);
+
 export default router;

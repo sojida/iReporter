@@ -136,5 +136,32 @@ export default {
     });
   },
 
+  deleteIncident: (req, res) => {
+    const typeOfIncident = util.incidentType(req.params.incidentType);
+    if (typeOfIncident === undefined) {
+      return res.status(400).json({
+        status: 400,
+        message: 'Do you mean /red-flags or /interventions',
+      });
+    }
+
+    const result = util.deleteById(incidents, parseFloat(req.params.id));
+
+    if (!result.delete) {
+      return res.status(404).send({
+        status: 404,
+        error: 'Resource not found',
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: [{
+        id: parseFloat(req.params.id),
+        message: `${typeOfIncident} record has been deleted`,
+      }],
+    });
+  },
+
 
 };

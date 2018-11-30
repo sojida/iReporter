@@ -2,13 +2,14 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../app';
+import { incidents } from '../server/db';
 
 chai.use(chaiHttp);
 
 describe('DELETE', () => {
-  it('DELETE /api/v1/red-flags/2 should respond with 200 deleted', (done) => {
+  it('DELETE /api/v1/red-flags/5 should respond with 200 deleted', (done) => {
     chai.request(server)
-      .delete('/api/v1/red-flags/2')
+      .delete('/api/v1/red-flags/5')
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body.status).to.equal(200);
@@ -22,9 +23,9 @@ describe('DELETE', () => {
       });
   });
 
-  it('DELETE /api/v1/red-fla*/2 : should respond with status 400 for typing in wrong incident-type', (done) => {
+  it('DELETE /api/v1/red-fla*/5 : should respond with status 400 for typing in wrong incident-type', (done) => {
     chai.request(server)
-      .delete('/api/v1/red-fla*/2')
+      .delete('/api/v1/red-fla*/5')
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(typeof res.body.status).to.equal('number');
