@@ -18,7 +18,6 @@ export default {
   },
 
   findByTypeAndId: (db, type, id) => {
-    // eslint-disable-next-line consistent-return
     const report = db.find(item => (item.type === type && item.id === parseFloat(id)));
     return report;
   },
