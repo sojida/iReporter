@@ -12,4 +12,7 @@ router.get('/:incidentType/:id', incidents.getIncidentById);
 // post an incident
 router.post('/:incidentType', incidents.postIncident);
 
+// patch incident location
+router.patch('/:incidentType/:id/location', incidents.patchLocation);
+
 export default router;
