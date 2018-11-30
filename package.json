@@ -4,8 +4,12 @@
   "description": "An anti-corruption movement",
   "main": "app.js",
   "scripts": {
-    "start": "babel-node app.js",
-    "dev": "nodemon app.js --exec babel-watch",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./server -s",
+    "build": "npm run clean && npm run build-babel",
+    "start-build": "npm run build && node ./build/app.js",
+    "start": "npm run start-build && node /build/app.js",
+    "dev": "nodemon /server/app.js --exec babel-watch",
     "test": "mocha --require babel-register ./test/*.test.js --exit",
     "coverage": "nyc --reporter=html --reporter=text --reporter=lcov mocha --reporter spec --require babel-register ./test/*.js --exit",
     "coveralls": "npm run coverage -- --report lcovonly && cat coverage/lcov.info | coveralls"
