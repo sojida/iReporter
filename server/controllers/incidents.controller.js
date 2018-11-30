@@ -84,29 +84,20 @@ export default {
       });
     }
 
-    const { found, changed } = util.changeProperty(incidents, req, 'location');
+    const value = util.changeProperty(incidents, req, 'location');
 
-    if (!found) {
-      return res.status(404).json({
-        status: 404,
-        error: 'Resource not found',
+    const err = util.checkStatus(value, res);
+
+    if (!err) {
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: parseFloat(req.params.id),
+          message: `Updated ${req.params.incidentType} record`,
+        }],
       });
     }
-
-    if (found && !changed) {
-      return res.status(409).json({
-        status: 409,
-        error: 'report status is resolved, rejected or under-investigation',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      data: [{
-        id: parseFloat(req.params.id),
-        message: 'Updated red-flag record',
-      }],
-    });
+    return err;
   },
 
   patchComment: (req, res) => {
@@ -118,29 +109,20 @@ export default {
       });
     }
 
-    const { found, changed } = util.changeProperty(incidents, req, 'comment');
+    const value = util.changeProperty(incidents, req, 'comment');
 
-    if (!found) {
-      return res.status(404).json({
-        status: 404,
-        error: 'Resource not found',
+    const err = util.checkStatus(value, res);
+
+    if (!err) {
+      return res.status(200).json({
+        status: 200,
+        data: [{
+          id: parseFloat(req.params.id),
+          message: `Updated ${req.params.incidentType} record`,
+        }],
       });
     }
-
-    if (found && !changed) {
-      return res.status(409).json({
-        status: 409,
-        error: 'report status is resolved, rejected or under-investigation',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      data: [{
-        id: parseFloat(req.params.id),
-        message: 'Updated red-flag record',
-      }],
-    });
+    return err;
   },
 
   deleteIncident: (req, res) => {

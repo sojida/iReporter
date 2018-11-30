@@ -74,5 +74,22 @@ export default {
     return deleted;
   },
 
+  // eslint-disable-next-line consistent-return
+  checkStatus: (status, res) => {
+    if (!status.found) {
+      return res.status(404).json({
+        status: 404,
+        error: 'Resource not found',
+      });
+    }
+
+    if (status.found && !status.changed) {
+      return res.status(409).json({
+        status: 409,
+        error: 'report status is resolved, rejected or under-investigation',
+      });
+    }
+  },
+
 
 };
