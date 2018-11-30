@@ -15,4 +15,7 @@ router.post('/:incidentType', incidents.postIncident);
 // patch incident location
 router.patch('/:incidentType/:id/location', incidents.patchLocation);
 
+// patch incident comment
+router.patch('/:incidentType/:id/comment', incidents.patchComment);
+
 export default router;
