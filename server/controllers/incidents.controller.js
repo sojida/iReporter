@@ -1,10 +1,11 @@
 import { incidents } from '../db';
 import util from '../utils/helperFunc';
+import validateIncident from '../utils/validateIncident';
 
 export default {
   getByIncidentType: (req, res) => {
     const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (typeOfIncident === undefined) {
+    if (!typeOfIncident) {
       return res.status(400).json({
         status: 400,
         message: 'Oops! Did you mean red-flags or interventions',
@@ -36,4 +37,36 @@ export default {
       data: [report],
     });
   },
+
+  postIncident: (req, res) => {
+    const typeOfIncident = util.incidentType(req.params.incidentType);
+    if (!typeOfIncident) {
+      return res.status(400).json({
+        status: 400,
+        message: 'Do you mean /red-flags or /interventions',
+      });
+    }
+    const report = util.newReport(req, typeOfIncident);
+
+    const result = validateIncident(report);
+
+    if (result.error) {
+      return res.status(400).json({
+        status: 400,
+        message: result.error.details[0].message,
+      });
+    }
+
+    incidents.push(report);
+
+    return res.status(201).json({
+      status: 201,
+      data: [{
+        id: report.id,
+        message: `created ${req.params.incidentType} record`,
+      }],
+    });
+  },
+
+
 };

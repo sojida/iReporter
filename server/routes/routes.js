@@ -9,5 +9,7 @@ router.get('/:incidentType', incidents.getByIncidentType);
 // get specific incident
 router.get('/:incidentType/:id', incidents.getIncidentById);
 
+// post an incident
+router.post('/:incidentType', incidents.postIncident);
 
 export default router;
