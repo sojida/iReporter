@@ -65,7 +65,7 @@ export default {
       delete: false,
     };
 
-    db.forEach((item, i) => {
+    db.find((item, i) => {
       if (item.id === id) {
         deleted.value = db.splice(i, 1);
         deleted.delete = true;
