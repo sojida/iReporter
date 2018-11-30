@@ -5,8 +5,21 @@ import server from '../app';
 
 chai.use(chaiHttp);
 
-describe('Incidents', () => {
-  it('GET /api/v1/red-flags: should respond with red-flag record', (done) => {
+describe('INCIDENTS', () => {
+  it('GET /api/v1/incidents should respond with all records', (done) => {
+    chai.request(server)
+      .get('/api/v1/incidents')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+
+        const { data } = res.body;
+
+        expect(Array.isArray(data)).to.be.equal(true);
+        done();
+      });
+  });
+
+  it('GET /api/v1/red-flags should respond with red-flag records', (done) => {
     chai.request(server)
       .get('/api/v1/red-flags')
       .end((err, res) => {
@@ -21,7 +34,7 @@ describe('Incidents', () => {
       });
   });
 
-  it('GET /api/v1/interventions: should respond with intervention record', (done) => {
+  it('GET /api/v1/interventions  should respond with intervention records', (done) => {
     chai.request(server)
       .get('/api/v1/interventions')
       .end((err, res) => {
