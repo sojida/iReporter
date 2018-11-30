@@ -53,7 +53,7 @@ const incidents = [
     createdBy: 3,
     type: 'intervention',
     location: '7.999999 , 6.232323',
-    status: 'resolved',
+    status: 'draft',
     Images: [],
     videos: [],
     comment: 'collapsed bridge',
