@@ -33,7 +33,12 @@ describe('POST', () => {
         expect(res).to.have.status(201);
         expect(res.body.status).to.equal(201);
         expect(typeof res.body.data[0].id).to.equal('number');
-        expect(res).to.increase(incidents);
+
+        const { id } = res.body.data[0];
+        const newReport = incidents.find(item => item.id === id);
+
+        expect(typeof newReport).to.equal('object');
+        expect(newReport.type).to.equal('red-flag');
         done();
       });
   });
@@ -46,7 +51,12 @@ describe('POST', () => {
         expect(res).to.have.status(201);
         expect(res.body.status).to.equal(201);
         expect(typeof res.body.data[0].id).to.equal('number');
-        expect(res).to.increase(incidents);
+
+        const { id } = res.body.data[0];
+        const newReport = incidents.find(item => item.id === id);
+
+        expect(typeof newReport).to.equal('object');
+        expect(newReport.type).to.equal('intervention');
         done();
       });
   });
@@ -58,14 +68,14 @@ describe('POST', () => {
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res.body.status).to.equal(400);
-        expect(res).to.not.increase(incidents);
+
         done();
       });
   });
 
   it('POST /api/v1/red-fla* : should respond with status 400 for typing in wrong incident-type', (done) => {
     chai.request(server)
-      .post('/api/v1/1/red-fla*')
+      .post('/api/v1/red-fla*')
       .send(goodInput)
       .end((err, res) => {
         expect(res).to.have.status(400);

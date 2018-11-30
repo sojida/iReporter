@@ -1,3 +1,5 @@
+import Incident from '../model/incident.model';
+import { incidents } from '../db';
 
 export default {
   incidentType: (reqType) => {
@@ -19,6 +21,20 @@ export default {
 
   findByTypeAndId: (db, type, id) => {
     const report = db.find(item => (item.type === type && item.id === parseFloat(id)));
+    return report;
+  },
+
+  newReport: (req, type) => {
+    const report = new Incident();
+    report.id = incidents.length + 1;
+    report.createdBy = req.body.createdBy;
+    report.type = type;
+    report.location = req.body.location;
+    report.images = req.body.images;
+    report.videos = req.body.videos;
+    report.comment = req.body.comment;
+    report.status = 'draft';
+
     return report;
   },
 
