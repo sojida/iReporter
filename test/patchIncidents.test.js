@@ -64,8 +64,6 @@ describe('PATCH LOCATION', () => {
   });
 });
 
-
-
 describe('PATCH COMMENT', () => {
   it('PATCH /api/v1/red-flags/2/comment with good input values should update specific comment', (done) => {
     chai.request(server)

@@ -102,5 +102,39 @@ export default {
     });
   },
 
+  patchComment: (req, res) => {
+    const typeOfIncident = util.incidentType(req.params.incidentType);
+    if (!typeOfIncident) {
+      return res.status(400).json({
+        status: 400,
+        message: 'Do you mean red-flags or interventions',
+      });
+    }
+
+    const { found, changed } = util.changeProperty(incidents, req, 'comment');
+
+    if (!found) {
+      return res.status(404).json({
+        status: 404,
+        error: 'Resource not found',
+      });
+    }
+
+    if (found && !changed) {
+      return res.status(409).json({
+        status: 409,
+        error: 'report status is resolved, rejected or under-investigation',
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: [{
+        id: parseFloat(req.params.id),
+        message: 'Updated red-flag record',
+      }],
+    });
+  },
+
 
 };
