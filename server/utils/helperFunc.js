@@ -59,5 +59,20 @@ export default {
     return reportStatus;
   },
 
+  deleteById: (db, id) => {
+    const deleted = {
+      value: null,
+      delete: false,
+    };
+
+    db.forEach((item, i) => {
+      if (item.id === id) {
+        deleted.value = db.splice(i, 1);
+        deleted.delete = true;
+      }
+    });
+    return deleted;
+  },
+
 
 };
