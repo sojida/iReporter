@@ -105,7 +105,7 @@ export default {
     if (!typeOfIncident) {
       return res.status(400).json({
         status: 400,
-        message: 'Do you mean red-flags or interventions',
+        message: 'Oops!! Do you mean red-flags or interventions',
       });
     }
 
