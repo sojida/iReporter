@@ -6,7 +6,7 @@ import server from '../app';
 chai.use(chaiHttp);
 
 describe('Incidents', () => {
-  it('GET /api/v1/red-flags: should respond with red-flag records', (done) => {
+  it('GET /api/v1/red-flags: should respond with red-flag record', (done) => {
     chai.request(server)
       .get('/api/v1/red-flags')
       .end((err, res) => {
@@ -21,7 +21,7 @@ describe('Incidents', () => {
       });
   });
 
-  it('GET /api/v1/interventions: should respond with intervention records', (done) => {
+  it('GET /api/v1/interventions: should respond with intervention record', (done) => {
     chai.request(server)
       .get('/api/v1/interventions')
       .end((err, res) => {
@@ -48,7 +48,7 @@ describe('Incidents', () => {
 
 
 describe('Specific incident', () => {
-  it('GET /api/v1/red-flags/<red-flag-id>: should respond with red-flag records', (done) => {
+  it('GET /api/v1/red-flags/1: should respond with red-flag record', (done) => {
     chai.request(server)
       .get('/api/v1/red-flags/1')
       .end((err, res) => {
@@ -64,7 +64,7 @@ describe('Specific incident', () => {
       });
   });
 
-  it('GET /api/v1/interventions: should respond with intervention records', (done) => {
+  it('GET /api/v1/interventions/3: should respond with intervention record', (done) => {
     chai.request(server)
       .get('/api/v1/interventions/3')
       .end((err, res) => {
@@ -80,6 +80,23 @@ describe('Specific incident', () => {
       });
   });
 
+  it('GET /api/v1/red-flags/1: should respond with red-flag record and id of 1', (done) => {
+    chai.request(server)
+      .get('/api/v1/red-flags/1')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+
+        const { data } = res.body;
+        const { type, id } = data[0];
+
+        expect(Array.isArray(data)).to.be.equal(true);
+        expect(data.length).to.be.equal(1);
+        expect(type).to.be.equal('red-flag');
+        expect(id).to.be.equal(1);
+        done();
+      });
+  });
+
   it('GET /api/v1/intervention*/3: should respond with error on wrong input type', (done) => {
     chai.request(server)
       .get('/api/v1/inter-redflag')
@@ -89,9 +106,9 @@ describe('Specific incident', () => {
       });
   });
 
-  it('GET /api/v1/interventions/0: should respond with error', (done) => {
+  it('GET /api/v1/interventions/0: should respond with error: 404', (done) => {
     chai.request(server)
-      .get('/api/v1/inter-redflag')
+      .get('/api/v1/interventions/0')
       .end((err, res) => {
         expect(res).to.have.status(404);
         done();

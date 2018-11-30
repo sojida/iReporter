@@ -18,4 +18,22 @@ export default {
       data: [...report],
     });
   },
+
+  getIncidentById: (req, res) => {
+    const typeOfIncident = util.incidentType(req.params.incidentType);
+
+    const report = util.findByTypeAndId(incidents, typeOfIncident, req.params.id);
+
+    if (!report) {
+      return res.status(404).json({
+        status: 404,
+        message: 'no report found, check the id or the incident type',
+      });
+    }
+
+    return res.status(200).json({
+      status: 200,
+      data: [report],
+    });
+  },
 };
