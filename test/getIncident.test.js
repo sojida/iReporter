@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 describe('INCIDENTS', () => {
   it('GET /api/v1/incidents should respond with all records', (done) => {
     chai.request(server)
-      .get('/api/v1/incident')
+      .get('/api/v1/incidents')
       .end((err, res) => {
         expect(res).to.have.status(200);
 

@@ -3,6 +3,10 @@ import incidents from '../controllers/incidents.controller';
 
 const router = express.Router();
 
+
+// get all incidents
+router.get('/incidents', incidents.getIncidents);
+
 // get incident type
 router.get('/:incidentType', incidents.getByIncidentType);
 

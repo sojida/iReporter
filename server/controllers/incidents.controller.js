@@ -3,6 +3,13 @@ import util from '../utils/helperFunc';
 import validateIncident from '../utils/validateIncident';
 
 export default {
+  getIncidents: (req, res) => {
+    res.status(200).json({
+      status: 200,
+      data: [...incidents],
+    });
+  },
+
   getByIncidentType: (req, res) => {
     const typeOfIncident = util.incidentType(req.params.incidentType);
     if (!typeOfIncident) {
