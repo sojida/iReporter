@@ -1,3 +1,5 @@
+/* eslint-disable array-callback-return */
+/* eslint-disable no-param-reassign */
 import Incident from '../model/incident.model';
 import { incidents } from '../db';
 
@@ -44,18 +46,16 @@ export default {
       changed: false,
     };
 
-    const record = db.find(item => item.id === parseFloat(req.params.id));
+    db.find((item) => {
+      if (item.id === parseFloat(req.params.id)) {
+        reportStatus.found = true;
+        if (item.status === 'draft') {
+          item[property] = req.body[property];
+          reportStatus.changed = true;
+        }
+      }
+    });
 
-    if (record) {
-      reportStatus.found = true;
-    } else {
-      return reportStatus;
-    }
-
-    if (record.status === 'draft') {
-      record[property] = req.body[property];
-      reportStatus.changed = true;
-    }
     return reportStatus;
   },
 
