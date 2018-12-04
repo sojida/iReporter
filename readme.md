@@ -12,7 +12,7 @@ Corruption is a huge bane to Africa’s development. African countries must deve
 <b> Test API Endpoints Here: </b> https://sojida-ireporter.herokuapp.com/ <br/>
 <b> Pivotal Tracker: </b> https://www.pivotaltracker.com/n/projects/2226753 
 
-##Table of content
+## Table of content
 
  * [Features](#features)
  * [Technologies](#technologies)
@@ -22,7 +22,7 @@ Corruption is a huge bane to Africa’s development. African countries must deve
 
 
 
-##Features
+## Features
 
 1. Users can create an account and log in.
 2. Users can create a ​red-flag ​record (An incident linked to corruption).
