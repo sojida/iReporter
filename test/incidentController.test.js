@@ -37,8 +37,20 @@ const badInput = {
 
 };
 
+describe('HOMEPAGE', () => {
+  it('should respond with 200', (done) => {
+    chai.request(server)
+      .get('/')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        done();
+      });
+  });
+});
+
+
 describe('GET ALL INCIDENTS', () => {
-  it('should respond with all records', (done) => {
+  it('should respond with all records in an array', (done) => {
     chai.request(server)
       .get('/api/v1/incidents')
       .end((err, res) => {
@@ -47,6 +59,7 @@ describe('GET ALL INCIDENTS', () => {
         const { data } = res.body;
 
         expect(Array.isArray(data)).to.be.equal(true);
+        expect(data.length).to.be.equal(5);
         done();
       });
   });
@@ -123,6 +136,7 @@ describe('GET SPECIFIC RECORD', () => {
       .get('/api/v1/red-flags/0')
       .end((err, res) => {
         expect(res).to.have.status(404);
+        expect(res.body.status).to.be.equal(404);
         done();
       });
   });
@@ -132,6 +146,7 @@ describe('GET SPECIFIC RECORD', () => {
       .get('/api/v1/interventions/0')
       .end((err, res) => {
         expect(res).to.have.status(404);
+        expect(res.body.status).to.be.equal(404);
         done();
       });
   });
@@ -193,9 +208,9 @@ const { location, comment } = {
 };
 
 const { badLocation, badComment } = {
-    badLocation: '',
-    badComment: ''
-}
+  badLocation: '',
+  badComment: '',
+};
 
 describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
   it('should update specific location', (done) => {

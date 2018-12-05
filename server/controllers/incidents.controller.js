@@ -110,18 +110,13 @@ export default {
     return err;
   },
 
-  deleteIncident: (req, res) => {
-    
-      return res.status(200).json({
-      status: 200,
-        data: [{
-          id: req.params.id,
-          message: `record has been deleted`,
-        }],
-    });
-
-    
-  },
+  deleteIncident: (req, res) => res.status(200).json({
+    status: 200,
+    data: [{
+      id: req.params.id,
+      message: 'record has been deleted',
+    }],
+  }),
 
 
 };
