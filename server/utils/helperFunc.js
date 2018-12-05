@@ -1,5 +1,3 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable no-param-reassign */
 import Incident from '../model/incident.model';
 import { incidents } from '../db';
 
@@ -50,30 +48,6 @@ export default {
     return reportStatus;
   },
 
-  deleteById: (db, id, res) => {
-    const deleted = {
-      value: null,
-      delete: false,
-    };
-
-    db.find((item, i) => {
-      if (item.id === id) {
-        deleted.value = db.splice(i, 1);
-        deleted.delete = true;
-      }
-    });
-
-    if (deleted.value) {
-      return deleted;
-    }
-
-    return res.status(404).send({
-      status: 404,
-      error: 'Resource not found',
-    });
-  },
-
-  // eslint-disable-next-line consistent-return
   checkStatus: (status, res) => {
     if (!status.found) {
       return res.status(404).json({

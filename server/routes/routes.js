@@ -3,6 +3,7 @@ import incidents from '../controllers/incidents.controller';
 import validateIncident from '../middlewares/validateIncident';
 import validateLocation from '../middlewares/validateLocation';
 import validateComment from '../middlewares/validateComment';
+import deleteById from '../middlewares/deleteById';
 
 const router = express.Router();
 
@@ -16,7 +17,7 @@ router.get('/red-flags/:id', incidents.getRedFlagById);
 router.post('/red-flags', validateIncident, incidents.postRecord);
 router.patch('/red-flags/:id/location', validateLocation, incidents.patchLocation);
 router.patch('/red-flags/:id/comment', validateComment, incidents.patchComment);
-router.delete('/red-flags/:id', incidents.deleteIncident);
+router.delete('/red-flags/:redFlagid', deleteById, incidents.deleteIncident);
 
 // Interventions
 router.get('/interventions', incidents.getInterventions);

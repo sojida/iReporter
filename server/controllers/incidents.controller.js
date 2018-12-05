@@ -62,7 +62,6 @@ export default {
   postRecord: (req, res) => {
     const newRecord = util.newReport(req);
     incidents.push(newRecord);
-    console.log(newRecord)
 
     return res.status(201).json({
       status: 201,
@@ -112,18 +111,16 @@ export default {
   },
 
   deleteIncident: (req, res) => {
-    const result = util.deleteById(incidents, parseFloat(req.params.id), res);
-
-    if (result.value) {
+    
       return res.status(200).json({
-        status: 200,
+      status: 200,
         data: [{
-          id: result.value[0].id,
-          value: result.value[0],
-          message: `${result.value[0].type} has been deleted`,
+          id: req.params.id,
+          message: `record has been deleted`,
         }],
-      });
-    }
+    });
+
+    
   },
 
 
