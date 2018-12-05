@@ -4,33 +4,22 @@ import Incident from '../model/incident.model';
 import { incidents } from '../db';
 
 export default {
-  incidentType: (reqType) => {
-    if (reqType === 'red-flags') {
-      return 'red-flag';
-    }
-
-    if (reqType === 'interventions') {
-      return 'intervention';
-    }
-
-    return undefined;
-  },
 
   findIncidentByType: (db, type) => {
     const reports = db.filter(item => item.type === type);
     return reports;
   },
 
-  findByTypeAndId: (db, type, id) => {
+  findById: (db, id, type) => {
     const report = db.find(item => (item.type === type && item.id === parseFloat(id)));
     return report;
   },
 
-  newReport: (req, type) => {
+  newReport: (req) => {
     const report = new Incident();
     report.id = incidents.length + 1;
     report.createdBy = req.body.createdBy;
-    report.type = type;
+    report.type = req.body.type;
     report.location = req.body.location;
     report.images = req.body.images;
     report.videos = req.body.videos;
@@ -44,6 +33,7 @@ export default {
     const reportStatus = {
       found: false,
       changed: false,
+      value: null,
     };
 
     db.find((item) => {
@@ -52,6 +42,7 @@ export default {
         if (item.status === 'draft') {
           item[property] = req.body[property];
           reportStatus.changed = true;
+          reportStatus.value = item;
         }
       }
     });
@@ -59,7 +50,7 @@ export default {
     return reportStatus;
   },
 
-  deleteById: (db, id) => {
+  deleteById: (db, id, res) => {
     const deleted = {
       value: null,
       delete: false,
@@ -71,7 +62,15 @@ export default {
         deleted.delete = true;
       }
     });
-    return deleted;
+
+    if (deleted.value) {
+      return deleted;
+    }
+
+    return res.status(404).send({
+      status: 404,
+      error: 'Resource not found',
+    });
   },
 
   // eslint-disable-next-line consistent-return
