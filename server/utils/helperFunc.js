@@ -14,8 +14,10 @@ export default {
   },
 
   newReport: (req) => {
+    const newId = incidents[incidents.length - 1].id;
     const report = new Incident();
-    report.id = incidents.length + 1;
+    
+    report.id = newId + 1;
     report.createdBy = req.body.createdBy;
     report.type = req.body.type;
     report.location = req.body.location;
@@ -62,6 +64,30 @@ export default {
         error: 'report status is resolved, rejected or under-investigation',
       });
     }
+  },
+
+  deleteById: (db, req, res) => {
+    let deleted = false;
+    let value = null;
+
+    const { id } = req.params;
+
+    incidents.forEach((item, i) => {
+      if (parseFloat(id) === item.id) {
+        value = incidents.splice(i, 1);
+        deleted = true;
+      }
+    });
+
+
+    if (!deleted) {
+      return res.status(404).send({
+        status: 404,
+        error: 'Resource not found',
+      });
+    }
+
+    return value;
   },
 
 

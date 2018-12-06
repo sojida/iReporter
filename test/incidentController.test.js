@@ -9,9 +9,9 @@ chai.use(chaiHttp);
 const goodRedFlagInput = {
   createdBy: 3,
   type: 'red-flag',
-  location: '5.222222 , 5.232323',
-  images: ['url'],
-  videos: ['url'],
+  location: '5.222222,5.232323',
+  images: ['url.jpg'],
+  videos: ['url.mp4'],
   comment: 'Civil servant collenting bribe',
   status: 'draft',
 
@@ -20,9 +20,9 @@ const goodRedFlagInput = {
 const goodInterventionInput = {
   createdBy: 3,
   type: 'intervention',
-  location: '5.222222 , 5.232323',
-  images: ['url'],
-  videos: ['url'],
+  location: '5.222222,5.232323',
+  images: ['url.jpg'],
+  videos: ['url.mp4'],
   comment: 'Civil servant collenting bribe',
   status: 'draft',
 
@@ -31,11 +31,14 @@ const goodInterventionInput = {
 const badInput = {
   createdBy: 3,
   location: '5.222222 , 5.232323',
-  images: 'url',
-  videos: 'url',
+  images: ['url', 'url2'],
+  videos: ['url3', 'url4'],
   comment: 'Civil servant collenting bribe',
 
 };
+
+const badInput2 = {};
+
 
 describe('HOMEPAGE', () => {
   it('should respond with 200', (done) => {
@@ -43,6 +46,7 @@ describe('HOMEPAGE', () => {
       .get('/')
       .end((err, res) => {
         expect(res).to.have.status(200);
+        expect(res.body.welcome).to.be.equal('IReporter Api');
         done();
       });
   });
@@ -60,6 +64,8 @@ describe('GET ALL INCIDENTS', () => {
 
         expect(Array.isArray(data)).to.be.equal(true);
         expect(data.length).to.be.equal(5);
+        expect(res.body.status).to.be.equal(200);
+        expect(data[0].type).to.be.equal('red-flag');
         done();
       });
   });
@@ -137,6 +143,7 @@ describe('GET SPECIFIC RECORD', () => {
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body.status).to.be.equal(404);
+        expect(res.body.message).to.be.equal('no report found, check the id or the incident type');
         done();
       });
   });
@@ -147,6 +154,7 @@ describe('GET SPECIFIC RECORD', () => {
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body.status).to.be.equal(404);
+        expect(res.body.message).to.be.equal('no report found, check the id or the incident type');
         done();
       });
   });
@@ -180,12 +188,7 @@ describe('POST ', () => {
         expect(res).to.have.status(201);
         expect(res.body.status).to.equal(201);
         expect(typeof res.body.data[0].id).to.equal('number');
-
-        const { id } = res.body.data[0];
-        const newReport = incidents.find(item => item.id === id);
-
-        expect(typeof newReport).to.equal('object');
-        expect(newReport.type).to.equal('intervention');
+        expect(res.body.data[0].record.type).to.equal('intervention');
         done();
       });
   });
@@ -197,18 +200,43 @@ describe('POST ', () => {
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res.body.status).to.equal(400);
+
+        const { message } = res.body;
+
+        expect(message[0].type).to.be.equal('type must be present');
+        expect(message[1].location).to.be.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
+        expect(message[2].images).to.be.equal('url this should be an image file');
+        expect(message[4].videos).to.be.equal('url3 this should be a video file');
+
+        done();
+      });
+  });
+
+  it('should not create new record because of bad inputs', (done) => {
+    chai.request(server)
+      .post('/api/v1/red-flags')
+      .send(badInput2)
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.status).to.equal(400);
+
+        const { message } = res.body;
+
+        expect(message[0].createdBy).to.be.equal('createdBy must be present');
+        expect(message[1].type).to.be.equal('type must be present');
+        expect(message[2].comment).to.be.equal('comment must be present');
         done();
       });
   });
 });
 
 const { location, comment } = {
-  location: '10.223432, 5.232423',
+  location: '10.223432,5.232423',
   comment: 'People are being harassed by police',
 };
 
 const { badLocation, badComment } = {
-  badLocation: '',
+  badLocation: '11.3454, abxh',
   badComment: '',
 };
 
@@ -237,6 +265,7 @@ describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body.status).to.equal(404);
+        expect(res.body.error).to.equal('Resource not found');
         done();
       });
   });
@@ -248,6 +277,8 @@ describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('location must be present');
+
         done();
       });
   });
@@ -259,6 +290,7 @@ describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
       .end((err, res) => {
         expect(res).to.have.status(409);
         expect(res.body.status).to.equal(409);
+        expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
         done();
       });
   });
@@ -282,13 +314,14 @@ describe('PATCH comment /api/v1/red-flags/:id/comment', () => {
       });
   });
 
-  it('should not return a resourse', (done) => {
+  it('should not return a resource', (done) => {
     chai.request(server)
       .patch('/api/v1/red-flags/0/comment')
       .send({ comment })
       .end((err, res) => {
         expect(res).to.have.status(404);
         expect(res.body.status).to.equal(404);
+        expect(res.body.error).to.equal('Resource not found');
         done();
       });
   });
@@ -300,6 +333,7 @@ describe('PATCH comment /api/v1/red-flags/:id/comment', () => {
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('Comment must be present');
         done();
       });
   });
@@ -311,6 +345,8 @@ describe('PATCH comment /api/v1/red-flags/:id/comment', () => {
       .end((err, res) => {
         expect(res).to.have.status(409);
         expect(res.body.status).to.equal(409);
+        expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+
         done();
       });
   });
@@ -325,6 +361,8 @@ describe('DELETE /api/v1/red-flags/:id', () => {
         expect(res).to.have.status(404);
         expect(typeof res.body.status).to.equal('number');
         expect(res.body.status).to.equal(404);
+        expect(res.body.error).to.equal('Resource not found');
+
         done();
       });
   });
@@ -339,6 +377,8 @@ describe('DELETE /api/v1/red-flags/:id', () => {
         const delReport = incidents.find(item => item.id === 4);
 
         expect(delReport).to.be.equal(undefined);
+        expect(res.body.data[0].record[0].id).to.equal(4);
+
         done();
       });
   });

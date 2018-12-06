@@ -67,7 +67,7 @@ export default {
       status: 201,
       data: [{
         id: newRecord.id,
-        value: newRecord,
+        record: newRecord,
         message: `created ${newRecord.type} record`,
       }],
     });
@@ -84,7 +84,7 @@ export default {
         status: 200,
         data: [{
           id: parseFloat(req.params.id),
-          value: value.value,
+          record: value.value,
           message: 'Updated red-flag record',
         }],
       });
@@ -102,7 +102,7 @@ export default {
         status: 200,
         data: [{
           id: parseFloat(req.params.id),
-          value: value.value,
+          record: value.value,
           message: 'Updated red-flag record',
         }],
       });
@@ -110,13 +110,20 @@ export default {
     return err;
   },
 
-  deleteIncident: (req, res) => res.status(200).json({
-    status: 200,
-    data: [{
-      id: req.params.id,
-      message: 'record has been deleted',
-    }],
-  }),
+  deleteIncident: (req, res) => {
+    const value = util.deleteById(incidents, req, res);
+
+    if (value) {
+      res.status(200).json({
+        status: 200,
+        data: [{
+          id: req.params.id,
+          record: value,
+          message: `${value[0].type} has been deleted`,
+        }],
+      });
+    }
+  },
 
 
 };

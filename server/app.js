@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.status(200).send('IReporter Api');
+  res.status(200).json({ welcome: 'IReporter Api' });
 });
 
 app.use('/api/v1', routes);
