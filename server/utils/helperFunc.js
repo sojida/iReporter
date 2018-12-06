@@ -16,7 +16,7 @@ export default {
   newReport: (req) => {
     const newId = incidents[incidents.length - 1].id;
     const report = new Incident();
-    
+
     report.id = newId + 1;
     report.createdBy = req.body.createdBy;
     report.type = req.body.type;
@@ -80,14 +80,14 @@ export default {
     });
 
 
-    if (!deleted) {
-      return res.status(404).send({
-        status: 404,
-        error: 'Resource not found',
-      });
+    if (deleted) {
+      return value[0];
     }
 
-    return value;
+    res.status(404).send({
+      status: 404,
+      error: 'Resource not found',
+    });
   },
 
 

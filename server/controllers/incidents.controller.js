@@ -111,15 +111,16 @@ export default {
   },
 
   deleteIncident: (req, res) => {
-    const value = util.deleteById(incidents, req, res);
+    const record = util.deleteById(incidents, req, res);
 
-    if (value) {
+
+    if (record) {
       res.status(200).json({
         status: 200,
         data: [{
           id: req.params.id,
-          record: value,
-          message: `${value[0].type} has been deleted`,
+          record,
+          message: `${record.type} has been deleted`,
         }],
       });
     }

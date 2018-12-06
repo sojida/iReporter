@@ -235,8 +235,9 @@ const { location, comment } = {
   comment: 'People are being harassed by police',
 };
 
-const { badLocation, badComment } = {
+const { badLocation, badComment, noLocation } = {
   badLocation: '11.3454, abxh',
+  noLocation: '',
   badComment: '',
 };
 
@@ -270,10 +271,23 @@ describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
       });
   });
 
-  it('should return with bad request', (done) => {
+  it('should return with bad request for wrong format', (done) => {
     chai.request(server)
       .patch('/api/v1/red-flags/2/location')
-      .send({ badLocation })
+      .send({ location: badLocation })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body.status).to.equal(400);
+        expect(res.body.message).to.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
+
+        done();
+      });
+  });
+
+  it('should return with bad request for no location', (done) => {
+    chai.request(server)
+      .patch('/api/v1/red-flags/2/location')
+      .send({ location: noLocation })
       .end((err, res) => {
         expect(res).to.have.status(400);
         expect(res.body.status).to.equal(400);
@@ -377,7 +391,7 @@ describe('DELETE /api/v1/red-flags/:id', () => {
         const delReport = incidents.find(item => item.id === 4);
 
         expect(delReport).to.be.equal(undefined);
-        expect(res.body.data[0].record[0].id).to.equal(4);
+        expect(res.body.data[0].record.id).to.equal(4);
 
         done();
       });
