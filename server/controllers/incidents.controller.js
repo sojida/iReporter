@@ -1,6 +1,5 @@
 import { incidents } from '../db';
 import util from '../utils/helperFunc';
-import validateIncident from '../utils/validateIncident';
 
 export default {
   getIncidents: (req, res) => {
@@ -10,27 +9,26 @@ export default {
     });
   },
 
-  getByIncidentType: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (!typeOfIncident) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Oops! Did you mean red-flags or interventions',
-      });
-    }
-
-    const report = util.findIncidentByType(incidents, typeOfIncident);
+  getRedFlags: (req, res) => {
+    const redFlags = util.findIncidentByType(incidents, 'red-flag');
 
     return res.status(200).json({
       status: 200,
-      data: [...report],
+      data: [...redFlags],
     });
   },
 
-  getIncidentById: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
+  getInterventions: (req, res) => {
+    const interventions = util.findIncidentByType(incidents, 'intervention');
 
-    const report = util.findByTypeAndId(incidents, typeOfIncident, req.params.id);
+    return res.status(200).json({
+      status: 200,
+      data: [...interventions],
+    });
+  },
+
+  getRedFlagById: (req, res) => {
+    const report = util.findById(incidents, req.params.id, 'red-flag');
 
     if (!report) {
       return res.status(404).json({
@@ -45,45 +43,38 @@ export default {
     });
   },
 
-  postIncident: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (!typeOfIncident) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Do you mean /red-flags or /interventions',
-      });
-    }
-    const report = util.newReport(req, typeOfIncident);
+  getInterventionById: (req, res) => {
+    const report = util.findById(incidents, req.params.id, 'intervention');
 
-    const result = validateIncident(report);
-
-    if (result.error) {
-      return res.status(400).json({
-        status: 400,
-        message: result.error.details[0].message,
+    if (!report) {
+      return res.status(404).json({
+        status: 404,
+        message: 'no report found, check the id or the incident type',
       });
     }
 
-    incidents.push(report);
+    return res.status(200).json({
+      status: 200,
+      data: [report],
+    });
+  },
+
+  postRecord: (req, res) => {
+    const newRecord = util.newReport(req);
+    incidents.push(newRecord);
 
     return res.status(201).json({
       status: 201,
       data: [{
-        id: report.id,
-        message: `created ${req.params.incidentType} record`,
+        id: newRecord.id,
+        record: newRecord,
+        message: `created ${newRecord.type} record`,
       }],
     });
   },
 
-  patchLocation: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (!typeOfIncident) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Do you mean red-flags or interventions',
-      });
-    }
 
+  patchLocation: (req, res) => {
     const value = util.changeProperty(incidents, req, 'location');
 
     const err = util.checkStatus(value, res);
@@ -93,7 +84,8 @@ export default {
         status: 200,
         data: [{
           id: parseFloat(req.params.id),
-          message: `Updated ${req.params.incidentType} record`,
+          record: value.value,
+          message: 'Updated red-flag record',
         }],
       });
     }
@@ -101,14 +93,6 @@ export default {
   },
 
   patchComment: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (!typeOfIncident) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Oops!! Do you mean red-flags or interventions',
-      });
-    }
-
     const value = util.changeProperty(incidents, req, 'comment');
 
     const err = util.checkStatus(value, res);
@@ -118,7 +102,8 @@ export default {
         status: 200,
         data: [{
           id: parseFloat(req.params.id),
-          message: `Updated ${req.params.incidentType} record`,
+          record: value.value,
+          message: 'Updated red-flag record',
         }],
       });
     }
@@ -126,30 +111,19 @@ export default {
   },
 
   deleteIncident: (req, res) => {
-    const typeOfIncident = util.incidentType(req.params.incidentType);
-    if (typeOfIncident === undefined) {
-      return res.status(400).json({
-        status: 400,
-        message: 'Do you mean /red-flags or /interventions',
+    const record = util.deleteById(incidents, req, res);
+
+
+    if (record) {
+      res.status(200).json({
+        status: 200,
+        data: [{
+          id: req.params.id,
+          record,
+          message: `${record.type} has been deleted`,
+        }],
       });
     }
-
-    const result = util.deleteById(incidents, parseFloat(req.params.id));
-
-    if (!result.delete) {
-      return res.status(404).send({
-        status: 404,
-        error: 'Resource not found',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      data: [{
-        id: parseFloat(req.params.id),
-        message: `${typeOfIncident} record has been deleted`,
-      }],
-    });
   },
 
 

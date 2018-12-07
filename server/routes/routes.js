@@ -1,5 +1,6 @@
 import express from 'express';
 import incidents from '../controllers/incidents.controller';
+import { validatePost, validateLocation, validateComment } from '../middlewares/validation';
 
 const router = express.Router();
 
@@ -7,22 +8,21 @@ const router = express.Router();
 // get all incidents
 router.get('/incidents', incidents.getIncidents);
 
-// get incident type
-router.get('/:incidentType', incidents.getByIncidentType);
+// Red flags
+router.get('/red-flags', incidents.getRedFlags);
+router.get('/red-flags/:id', incidents.getRedFlagById);
+router.post('/red-flags', validatePost, incidents.postRecord);
+router.patch('/red-flags/:id/location', validateLocation, incidents.patchLocation);
+router.patch('/red-flags/:id/comment', validateComment, incidents.patchComment);
+router.delete('/red-flags/:id', incidents.deleteIncident);
 
-// get specific incident
-router.get('/:incidentType/:id', incidents.getIncidentById);
+// Interventions
+router.get('/interventions', incidents.getInterventions);
+router.get('/interventions/:id', incidents.getInterventionById);
+router.post('/interventions', validatePost, incidents.postRecord);
+router.patch('/interventions/:id/location', validateLocation, incidents.patchLocation);
+router.patch('/interventions/:id/comment', validateComment, incidents.patchComment);
+router.delete('/interventions/:id', incidents.deleteIncident);
 
-// post an incident
-router.post('/:incidentType', incidents.postIncident);
-
-// patch incident location
-router.patch('/:incidentType/:id/location', incidents.patchLocation);
-
-// patch incident comment
-router.patch('/:incidentType/:id/comment', incidents.patchComment);
-
-// delete incident
-router.delete('/:incidentType/:id', incidents.deleteIncident);
 
 export default router;

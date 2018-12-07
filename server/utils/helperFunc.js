@@ -1,36 +1,25 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable no-param-reassign */
 import Incident from '../model/incident.model';
 import { incidents } from '../db';
 
 export default {
-  incidentType: (reqType) => {
-    if (reqType === 'red-flags') {
-      return 'red-flag';
-    }
-
-    if (reqType === 'interventions') {
-      return 'intervention';
-    }
-
-    return undefined;
-  },
 
   findIncidentByType: (db, type) => {
     const reports = db.filter(item => item.type === type);
     return reports;
   },
 
-  findByTypeAndId: (db, type, id) => {
+  findById: (db, id, type) => {
     const report = db.find(item => (item.type === type && item.id === parseFloat(id)));
     return report;
   },
 
-  newReport: (req, type) => {
+  newReport: (req) => {
+    const newId = incidents[incidents.length - 1].id;
     const report = new Incident();
-    report.id = incidents.length + 1;
+
+    report.id = newId + 1;
     report.createdBy = req.body.createdBy;
-    report.type = type;
+    report.type = req.body.type;
     report.location = req.body.location;
     report.images = req.body.images;
     report.videos = req.body.videos;
@@ -44,6 +33,7 @@ export default {
     const reportStatus = {
       found: false,
       changed: false,
+      value: null,
     };
 
     db.find((item) => {
@@ -52,6 +42,7 @@ export default {
         if (item.status === 'draft') {
           item[property] = req.body[property];
           reportStatus.changed = true;
+          reportStatus.value = item;
         }
       }
     });
@@ -59,22 +50,6 @@ export default {
     return reportStatus;
   },
 
-  deleteById: (db, id) => {
-    const deleted = {
-      value: null,
-      delete: false,
-    };
-
-    db.find((item, i) => {
-      if (item.id === id) {
-        deleted.value = db.splice(i, 1);
-        deleted.delete = true;
-      }
-    });
-    return deleted;
-  },
-
-  // eslint-disable-next-line consistent-return
   checkStatus: (status, res) => {
     if (!status.found) {
       return res.status(404).json({
@@ -89,6 +64,30 @@ export default {
         error: 'report status is resolved, rejected or under-investigation',
       });
     }
+  },
+
+  deleteById: (db, req, res) => {
+    let deleted = false;
+    let value = null;
+
+    const { id } = req.params;
+
+    incidents.forEach((item, i) => {
+      if (parseFloat(id) === item.id) {
+        value = incidents.splice(i, 1);
+        deleted = true;
+      }
+    });
+
+
+    if (deleted) {
+      return value[0];
+    }
+
+    res.status(404).send({
+      status: 404,
+      error: 'Resource not found',
+    });
   },
 
 
