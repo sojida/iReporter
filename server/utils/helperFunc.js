@@ -1,5 +1,7 @@
 import Incident from '../model/incident.model';
-import { incidents } from '../db';
+import User from '../model/users.model';
+import { incidents, users } from '../db';
+import Users from '../model/users.model';
 
 export default {
 
@@ -89,6 +91,30 @@ export default {
       error: 'Resource not found',
     });
   },
+
+  createUser: (req) => {
+    const newId = users[users.length - 1].id;
+    const user = new Users();
+
+    user.id = newId + 1;
+    user.firstname = req.body.firstname;
+    user.lastname = req.body.lastname;
+    user.othernames = req.body.othernames;
+    user.phoneNumber = req.body.phoneNumber;
+    user.username = req.body.username;
+    user.email = req.body.email;
+
+    return user;
+
+  },
+
+  findUser: (req) => {
+    const { email } = req.body;
+
+    const user = users.find(item => item.email === email);
+
+    return user;
+  }
 
 
 };

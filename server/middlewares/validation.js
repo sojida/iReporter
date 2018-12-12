@@ -3,19 +3,30 @@ const validatePost = (req, res, next) => {
   const error = [];
 
   const {
-    createdBy, type, location, images, videos, comment,
+    type, location, images, videos, comment, title,
   } = req.body;
 
 
-  if (!createdBy) {
+  if (type) {
+    if (type === 'red-flag' || type === 'intervention') {
+      verified = true;
+      if (req.type !== type) {
+        verified = false;
+        error.push({ type: 'please use the right route' });
+      }
+    } else {
+      verified = false;
+      error.push({ type: 'type can only be red-flag or intervention' });
+    }
+  } else {
     verified = false;
-    error.push({ createdBy: 'createdBy must be present' });
+    error.push({ type: 'type must be present' });
   }
 
 
-  if (!type) {
+  if (!title) {
     verified = false;
-    error.push({ type: 'type must be present' });
+    error.push({ title: 'title must be present' });
   }
 
   if (location) {
@@ -53,12 +64,13 @@ const validatePost = (req, res, next) => {
     error.push({ comment: 'comment must be present' });
   }
 
+
   if (verified) {
     next();
   } else {
     res.status(400).json({
       status: 400,
-      message: error,
+      errors: error,
     });
   }
 };
@@ -70,13 +82,13 @@ const validateLocation = (req, res, next) => {
     if (!(/^-?[\d]{1,2}.[\d]{3,6},-?[\d]{1,2}.[\d]{3,6}$/.test(location))) {
       return res.status(400).json({
         status: 400,
-        message: 'location format invalid. Example: (-)90.342345,(-)23.643245.',
+        error: 'location format invalid. Example: (-)90.342345,(-)23.643245.',
       });
     }
   } else {
     return res.status(400).json({
       status: 400,
-      message: 'location must be present',
+      error: 'location must be present',
     });
   }
 
@@ -90,11 +102,43 @@ const validateComment = (req, res, next) => {
   if (!comment) {
     return res.status(400).json({
       status: 400,
-      message: 'Comment must be present',
+      error: 'Comment must be present',
     });
   }
 
   next();
 };
 
-module.exports = { validatePost, validateLocation, validateComment };
+const validateStatus = (req, res, next) => {
+  const { status } = req.body;
+  let verified = true;
+  const error = [];
+
+  if (status) {
+    if (status === 'resolved' || status === 'investigating' || status === 'rejected') {
+      verified = true;
+    } else {
+      verified = false;
+      error.push({ status: 'error type must be: investigating, rejected or resolved' });
+    }
+  } else {
+    verified = false;
+    error.push({ status: 'status must be present' });
+  }
+
+  if (verified) {
+    next();
+  } else {
+    res.status(400).json({
+      status: 400,
+      message: error,
+    });
+  }
+};
+
+module.exports = {
+  validatePost,
+  validateLocation,
+  validateComment,
+  validateStatus,
+};
