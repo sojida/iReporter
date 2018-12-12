@@ -1,399 +1,576 @@
+/* eslint-disable no-console */
 /* eslint-disable no-undef */
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../server/app';
-import { incidents } from '../server/db';
+import db from '../server/db/user.db';
+import {
+  createUsersTable, createIncidentTable, deleteUser, deleteIncidents,
+} from '../server/db/queries';
+
+import {
+  goodInterventionInput,
+  goodRedFlagInput,
+  user,
+  badInput,
+  badInput2,
+  admin,
+  goodRedFlagInput2,
+} from './mockData';
+
 
 chai.use(chaiHttp);
 
-const goodRedFlagInput = {
-  createdBy: 3,
-  type: 'red-flag',
-  location: '5.222222,5.232323',
-  images: ['url.jpg'],
-  videos: ['url.mp4'],
-  comment: 'Civil servant collenting bribe',
-  status: 'draft',
-
-};
-
-const goodInterventionInput = {
-  createdBy: 3,
-  type: 'intervention',
-  location: '5.222222,5.232323',
-  images: ['url.jpg'],
-  videos: ['url.mp4'],
-  comment: 'Civil servant collenting bribe',
-  status: 'draft',
-
-};
-
-const badInput = {
-  createdBy: 3,
-  location: '5.222222 , 5.232323',
-  images: ['url', 'url2'],
-  videos: ['url3', 'url4'],
-  comment: 'Civil servant collenting bribe',
-
-};
-
-const badInput2 = {};
+let token;
+let userId;
+let redFlagId;
+let redFlagId2;
+let interventionId;
+let adminToken;
+let adminId;
 
 
-describe('HOMEPAGE', () => {
-  it('should respond with 200', (done) => {
-    chai.request(server)
-      .get('/')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.welcome).to.be.equal('IReporter Api');
-        done();
-      });
-  });
-});
-
-
-describe('GET ALL INCIDENTS', () => {
-  it('should respond with all records in an array', (done) => {
-    chai.request(server)
-      .get('/api/v1/incidents')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-
-        const { data } = res.body;
-
-        expect(Array.isArray(data)).to.be.equal(true);
-        expect(data.length).to.be.equal(5);
-        expect(res.body.status).to.be.equal(200);
-        expect(data[0].type).to.be.equal('red-flag');
-        done();
-      });
-  });
-});
-
-describe('GET RECORDS', () => {
-  it('should respond with red-flag records', (done) => {
-    chai.request(server)
-      .get('/api/v1/red-flags')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-
-        const { data } = res.body;
-        const { type } = data[0];
-
-        expect(Array.isArray(data)).to.be.equal(true);
-        expect(type).to.be.equal('red-flag');
-        done();
-      });
+describe('ALLTEST', () => {
+  before(async () => {
+    try {
+      await db.query(createUsersTable());
+      await db.query(createIncidentTable());
+      console.log('created tables');
+    } catch (error) {
+      console.log(error);
+    }
   });
 
-  it('should respond with intervention records', (done) => {
-    chai.request(server)
-      .get('/api/v1/interventions')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
 
-        const { data } = res.body;
-        const { type } = data[0];
-
-        expect(Array.isArray(data)).to.be.equal(true);
-        expect(type).to.be.equal('intervention');
-        done();
-      });
-  });
-});
-
-
-describe('GET SPECIFIC RECORD', () => {
-  it('should respond with specific red-flag record', (done) => {
-    chai.request(server)
-      .get('/api/v1/red-flags/1')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-
-        const { data } = res.body;
-        const { type } = data[0];
-
-        expect(Array.isArray(data)).to.be.equal(true);
-        expect(data.length).to.be.equal(1);
-        expect(type).to.be.equal('red-flag');
-        done();
-      });
+  after(async () => {
+    try {
+      await db.query(deleteUser(userId));
+      await db.query(deleteUser(adminId));
+      await db.query(deleteIncidents(redFlagId));
+      await db.query(deleteIncidents(redFlagId2));
+      await db.query(deleteIncidents(interventionId));
+    } catch (error) {
+      console.log(error);
+    }
   });
 
-  it('should respond with specific intervention record', (done) => {
-    chai.request(server)
-      .get('/api/v1/interventions/3')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-
-        const { data } = res.body;
-        const { type } = data[0];
-
-        expect(Array.isArray(data)).to.be.equal(true);
-        expect(data.length).to.be.equal(1);
-        expect(type).to.be.equal('intervention');
-        done();
-      });
+  describe('HOMEPAGE', () => {
+    it('should respond with 200', (done) => {
+      chai.request(server)
+        .get('/')
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.welcome).to.be.equal('IReporter Api');
+          done();
+        });
+    });
   });
 
-  it('should not return red flag record that is not in database', (done) => {
-    chai.request(server)
-      .get('/api/v1/red-flags/0')
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body.status).to.be.equal(404);
-        expect(res.body.message).to.be.equal('no report found, check the id or the incident type');
-        done();
-      });
+
+  describe('REGISTER ', () => {
+    it('should create new user', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equal(201);
+
+          const {
+            firstname,
+            lastname,
+            othernames,
+            email,
+            phonenumber,
+            username,
+            isadmin,
+          } = res.body.data[0].user;
+
+          expect(firstname).to.equal(user.firstname);
+          expect(lastname).to.equal(user.lastname);
+          expect(othernames).to.equal(user.othernames);
+          expect(email).to.equal(user.email);
+          expect(phonenumber).to.equal(user.phoneNumber);
+          expect(username).to.equal(user.username);
+          expect(isadmin).to.equal(false);
+          done();
+        });
+    });
+
+    it('should create new admin', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(admin)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equal(201);
+
+          adminId = res.body.data[0].user.id;
+          adminToken = res.body.data[0].token;
+          const {
+            firstname,
+            lastname,
+            othernames,
+            email,
+            phonenumber,
+            username,
+            isadmin,
+          } = res.body.data[0].user;
+
+          expect(firstname).to.equal(admin.firstname);
+          expect(lastname).to.equal(admin.lastname);
+          expect(othernames).to.equal(admin.othernames);
+          expect(email).to.equal(admin.email);
+          expect(phonenumber).to.equal(admin.phoneNumber);
+          expect(username).to.equal(admin.username);
+          expect(isadmin).to.equal(true);
+          done();
+        });
+    });
   });
 
-  it('should not return intervention record that is not in database', (done) => {
-    chai.request(server)
-      .get('/api/v1/interventions/0')
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body.status).to.be.equal(404);
-        expect(res.body.message).to.be.equal('no report found, check the id or the incident type');
-        done();
-      });
-  });
-});
 
+  describe('LOGIN ', () => {
+    it('should login user', (done) => {
+      chai.request(server)
+        .post('/auth/login')
+        .send({
+          email: 'soji@gmail.com',
+          password: '12345678',
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+          token = res.body.data[0].token;
+          userId = res.body.data[0].user.id;
 
-describe('POST ', () => {
-  it('should create a new red-flag record', (done) => {
-    chai.request(server)
-      .post('/api/v1/red-flags')
-      .send(goodRedFlagInput)
-      .end((err, res) => {
-        expect(res).to.have.status(201);
-        expect(res.body.status).to.equal(201);
-        expect(typeof res.body.data[0].id).to.equal('number');
+          const {
+            firstname,
+            lastname,
+            othernames,
+            email,
+            phonenumber,
+            username,
+          } = res.body.data[0].user;
 
-        const { id } = res.body.data[0];
-        const newReport = incidents.find(item => item.id === id);
-
-        expect(typeof newReport).to.equal('object');
-        expect(newReport.type).to.equal('red-flag');
-        done();
-      });
-  });
-
-  it('should create a new intervention record', (done) => {
-    chai.request(server)
-      .post('/api/v1/interventions')
-      .send(goodInterventionInput)
-      .end((err, res) => {
-        expect(res).to.have.status(201);
-        expect(res.body.status).to.equal(201);
-        expect(typeof res.body.data[0].id).to.equal('number');
-        expect(res.body.data[0].record.type).to.equal('intervention');
-        done();
-      });
+          expect(firstname).to.equal(user.firstname);
+          expect(lastname).to.equal(user.lastname);
+          expect(othernames).to.equal(user.othernames);
+          expect(email).to.equal(user.email);
+          expect(phonenumber).to.equal(user.phoneNumber);
+          expect(username).to.equal(user.username);
+          done();
+        });
+    });
   });
 
-  it('should not create new record because of bad inputs', (done) => {
-    chai.request(server)
-      .post('/api/v1/red-flags')
-      .send(badInput)
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.status).to.equal(400);
+  describe('POST ', () => {
+    it('should create a new red-flag record', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flags')
+        .set('Authorization', token)
+        .send(goodRedFlagInput)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equal(201);
 
-        const { message } = res.body;
+          redFlagId = res.body.record.id;
+          const {
+            comment, type, location, status,
+          } = res.body.record;
 
-        expect(message[0].type).to.be.equal('type must be present');
-        expect(message[1].location).to.be.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
-        expect(message[2].images).to.be.equal('url this should be an image file');
-        expect(message[4].videos).to.be.equal('url3 this should be a video file');
+          expect(comment).to.equal(goodRedFlagInput.comment);
+          expect(type).to.equal(goodRedFlagInput.type);
+          expect(location).to.equal(goodRedFlagInput.location);
+          expect(status).to.equal(goodRedFlagInput.status);
+          done();
+        });
+    });
 
-        done();
-      });
+    it('should create a new red-flag record', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flags')
+        .set('Authorization', token)
+        .send(goodRedFlagInput2)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equal(201);
+
+          redFlagId2 = res.body.record.id;
+          const {
+            comment, type, location, status,
+          } = res.body.record;
+
+          expect(comment).to.equal(goodRedFlagInput2.comment);
+          expect(type).to.equal(goodRedFlagInput2.type);
+          expect(location).to.equal(goodRedFlagInput2.location);
+          expect(status).to.equal(goodRedFlagInput2.status);
+          done();
+        });
+    });
+
+    it('should create a new intervention record', (done) => {
+      chai.request(server)
+        .post('/api/v1/interventions')
+        .set('Authorization', token)
+        .send(goodInterventionInput)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equal(201);
+
+          interventionId = res.body.record.id;
+          const {
+            comment, type, location, status,
+          } = res.body.record;
+
+          expect(comment).to.equal(goodInterventionInput.comment);
+          expect(type).to.equal(goodInterventionInput.type);
+          expect(location).to.equal(goodInterventionInput.location);
+          expect(status).to.equal(goodInterventionInput.status);
+          done();
+        });
+    });
+
+    it('should not create new record because of bad inputs', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flags')
+        .set('Authorization', token)
+        .send(badInput)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+
+          const { errors } = res.body;
+
+          expect(Array.isArray(errors)).to.be(true);
+        
+
+          done();
+        });
+    });
+
+    it('should not create new record because of bad inputs', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flags')
+        .set('Authorization', token)
+        .send(badInput2)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+
+          const { errors } = res.body;
+
+          expect(Array.isArray(errors)).to.be(true);
+
+          done();
+        });
+    });
   });
 
-  it('should not create new record because of bad inputs', (done) => {
-    chai.request(server)
-      .post('/api/v1/red-flags')
-      .send(badInput2)
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.status).to.equal(400);
 
-        const { message } = res.body;
+  describe('GET ALL INCIDENTS', () => {
+    it('should respond with all records', (done) => {
+      chai.request(server)
+        .get('/api/v1/incidents')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
 
-        expect(message[0].createdBy).to.be.equal('createdBy must be present');
-        expect(message[1].type).to.be.equal('type must be present');
-        expect(message[2].comment).to.be.equal('comment must be present');
-        done();
-      });
-  });
-});
+          const { data } = res.body;
 
-const { location, comment } = {
-  location: '10.223432,5.232423',
-  comment: 'People are being harassed by police',
-};
-
-const { badLocation, badComment, noLocation } = {
-  badLocation: '11.3454, abxh',
-  noLocation: '',
-  badComment: '',
-};
-
-describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
-  it('should update specific location', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/2/location')
-      .send({ location })
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.status).to.equal(200);
-        expect(typeof res.body.data[0].id).to.equal('number');
-
-        const newReport = incidents.find(item => item.id === 2);
-
-        expect(typeof newReport).to.equal('object');
-        expect(newReport.location).to.equal(location);
-        done();
-      });
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(res.body.status).to.be.equal(200);
+          expect(data[0]).to.contain.keys('id', 'type', 'status');
+          done();
+        });
+    });
   });
 
-  it('should return with no record', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/0/location')
-      .send({ location })
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body.status).to.equal(404);
-        expect(res.body.error).to.equal('Resource not found');
-        done();
-      });
+  describe('GET RECORDS', () => {
+    it('should respond with red-flag records', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-flags')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+
+          const { data } = res.body;
+          const { type } = data[0];
+
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(type).to.be.equal('red-flag');
+          done();
+        });
+    });
+
+    it('should respond with intervention records', (done) => {
+      chai.request(server)
+        .get('/api/v1/interventions')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+
+          const { data } = res.body;
+          const { type } = data[0];
+
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(type).to.be.equal('intervention');
+          done();
+        });
+    });
   });
 
-  it('should return with bad request for wrong format', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/2/location')
-      .send({ location: badLocation })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.status).to.equal(400);
-        expect(res.body.message).to.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
 
-        done();
-      });
+  describe('GET SPECIFIC RECORD', () => {
+    it('should respond with specific red-flag record', (done) => {
+      chai.request(server)
+        .get(`/api/v1/red-flags/${redFlagId}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+
+          const { data } = res.body;
+          const { type } = data[0];
+
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(data.length).to.be.equal(1);
+          expect(type).to.be.equal('red-flag');
+          done();
+        });
+    });
+
+    it('should respond with specific intervention record', (done) => {
+      chai.request(server)
+        .get(`/api/v1/interventions/${interventionId}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+
+          const { data } = res.body;
+          const { type } = data[0];
+
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(data.length).to.be.equal(1);
+          expect(type).to.be.equal('intervention');
+          done();
+        });
+    });
+
+    it('should not return red flag record that is not in database', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-flags/0')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.status).to.be.equal(404);
+          expect(res.body.error).to.be.equal('oops! Nothing found. Check the type of record or the id');
+          done();
+        });
+    });
+
+    it('should not return intervention record that is not in database', (done) => {
+      chai.request(server)
+        .get('/api/v1/interventions/0')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.status).to.be.equal(404);
+          expect(res.body.error).to.be.equal('oops! Nothing found. Check the type of record or the id');
+          done();
+        });
+    });
   });
 
-  it('should return with bad request for no location', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/2/location')
-      .send({ location: noLocation })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.status).to.equal(400);
-        expect(res.body.message).to.equal('location must be present');
 
-        done();
-      });
+  const { location, comment } = {
+    location: '10.223432,5.232423',
+    comment: 'People are being harassed by police',
+  };
+
+  const { badLocation, badComment, noLocation } = {
+    badLocation: '11.3454, abxh',
+    noLocation: '',
+    badComment: '',
+  };
+
+  describe('PATCH LOCATION  /api/v1/red-flags/:id/location', () => {
+    it('should update specific location', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/location`)
+        .set('Authorization', token)
+        .send({ location })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+
+          const { id } = res.body.data[0];
+
+          expect(id).to.equal(redFlagId);
+          expect(res.body.data[0].location).to.equal(location);
+          done();
+        });
+    });
+
+
+    it('should return with bad request for wrong format', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/location`)
+        .set('Authorization', token)
+        .send({ location: badLocation })
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
+
+          done();
+        });
+    });
+
+    it('should return with bad request for no location', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/location`)
+        .set('Authorization', token)
+        .send({ location: noLocation })
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('location must be present');
+
+          done();
+        });
+    });
+
+    it('should have conflict because the status is not draft ', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId2}/location`)
+        .set('Authorization', token)
+        .send({ location })
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+          done();
+        });
+    });
   });
 
-  it('should have conflict because the status is not draft ', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/1/location')
-      .send({ location })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        expect(res.body.status).to.equal(409);
-        expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
-        done();
-      });
-  });
-});
+  describe('PATCH comment /api/v1/red-flags/:id/comment', () => {
+    it('should update specific comment', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/comment`)
+        .set('Authorization', token)
+        .send({ comment })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
 
-describe('PATCH comment /api/v1/red-flags/:id/comment', () => {
-  it('should update specific comment', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/2/comment')
-      .send({ comment })
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.status).to.equal(200);
-        expect(typeof res.body.data[0].id).to.equal('number');
+          const { id } = res.body.data[0];
 
-        const newReport = incidents.find(item => item.id === 2);
+          expect(id).to.equal(redFlagId);
+          expect(res.body.data[0].comment).to.equal(comment);
+          done();
+        });
+    });
 
-        expect(typeof newReport).to.equal('object');
-        expect(newReport.comment).to.equal(comment);
-        done();
-      });
-  });
 
-  it('should not return a resource', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/0/comment')
-      .send({ comment })
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(res.body.status).to.equal(404);
-        expect(res.body.error).to.equal('Resource not found');
-        done();
-      });
-  });
+    it('should return with bad request', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/comment`)
+        .set('Authorization', token)
+        .send({ badComment })
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.message).to.equal('Comment must be present');
+          done();
+        });
+    });
 
-  it('should return with bad request', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/2/comment')
-      .send({ badComment })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body.status).to.equal(400);
-        expect(res.body.message).to.equal('Comment must be present');
-        done();
-      });
+    it('should not change comment because it\'s status is not draft', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId2}/comment`)
+        .set('Authorization', token)
+        .send({ comment })
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+
+          done();
+        });
+    });
   });
 
-  it('should not change comment because it\'s status is not draft', (done) => {
-    chai.request(server)
-      .patch('/api/v1/red-flags/1/comment')
-      .send({ comment })
-      .end((err, res) => {
-        expect(res).to.have.status(409);
-        expect(res.body.status).to.equal(409);
-        expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+  describe('Admin /api/v1/red-flags/:id/status', () => {
+    it('should respond 403 for unautorised user', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/red-flags/${redFlagId}/status`)
+        .send({ status: 'resolved' })
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equal(401);
+          expect(res.body.error).to.equal('This user is not an Admin');
 
-        done();
-      });
+          done();
+        });
+    });
+
+    it('should respond 200', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/intervention/${interventionId}/status`)
+        .send({ status: 'resolved' })
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body.data[0].status).to.equal('resolved');
+          done();
+        });
+    });
   });
-});
 
 
-describe('DELETE /api/v1/red-flags/:id', () => {
-  it('should respond with bad request', (done) => {
-    chai.request(server)
-      .delete('/api/v1/red-flags/0')
-      .end((err, res) => {
-        expect(res).to.have.status(404);
-        expect(typeof res.body.status).to.equal('number');
-        expect(res.body.status).to.equal(404);
-        expect(res.body.error).to.equal('Resource not found');
+  describe('DELETE /api/v1/red-flags/:id', () => {
+    it('should respond with unauthorised', (done) => {
+      chai.request(server)
+        .delete('/api/v1/red-flags/27')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(403);
+          expect(res.body.status).to.equal(403);
+          expect(res.body.error).to.equal('Unauthoirised');
 
-        done();
-      });
-  });
+          done();
+        });
+    });
 
-  it('should remove file from database and have 200 as status code', (done) => {
-    chai.request(server)
-      .delete('/api/v1/red-flags/4')
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body.status).to.equal(200);
+    it('should remove file from database and have 200 as status code red-flag', (done) => {
+      chai.request(server)
+        .delete(`/api/v1/red-flags/${redFlagId}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
 
-        const delReport = incidents.find(item => item.id === 4);
+          expect(res.body.data[0].id).to.equal(redFlagId);
 
-        expect(delReport).to.be.equal(undefined);
-        expect(res.body.data[0].record.id).to.equal(4);
+          done();
+        });
+    });
 
-        done();
-      });
+    it('should remove file from database and have 200 as status code for interventions', (done) => {
+      chai.request(server)
+        .delete(`/api/v1/interventions/${interventionId}`)
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+
+          expect(res.body.data[0].id).to.equal(interventionId);
+
+          done();
+        });
+    });
   });
 });
