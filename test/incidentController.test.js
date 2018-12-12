@@ -35,7 +35,7 @@ describe('ALLTEST', () => {
     try {
       await db.query(createUsersTable());
       await db.query(createIncidentTable());
-      
+
       console.log('created tables');
     } catch (error) {
       console.log(error);
@@ -76,7 +76,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(201);
           expect(res.body.status).to.equal(201);
-
+          
           const {
             firstname,
             lastname,
@@ -145,6 +145,8 @@ describe('ALLTEST', () => {
           token = res.body.data[0].token;
           userId = res.body.data[0].user.id;
 
+         
+
           const {
             firstname,
             lastname,
@@ -188,7 +190,7 @@ describe('ALLTEST', () => {
         });
     });
 
-    it('should create a new red-flag record', (done) => {
+    it('should create another new red-flag record', (done) => {
       chai.request(server)
         .post('/api/v1/red-flags')
         .set('Authorization', token)
@@ -242,9 +244,9 @@ describe('ALLTEST', () => {
           expect(res.body.status).to.equal(400);
 
           const { errors } = res.body;
-
-          expect(Array.isArray(errors)).to.be(true);
         
+          expect(errors[0].type).to.equal('type must be present');
+          expect(errors[1].title).to.equal('title must be present');
 
           done();
         });
@@ -260,8 +262,26 @@ describe('ALLTEST', () => {
           expect(res.body.status).to.equal(400);
 
           const { errors } = res.body;
+          expect(errors[0].type).to.equal('type must be present');
+          expect(errors[1].title).to.equal('title must be present');
+          expect(errors[2].comment).to.equal('comment must be present');
+          done();
+        });
+    });
 
-          expect(Array.isArray(errors)).to.be(true);
+
+    it('should not create new record because of wrong spelling', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flag*')
+        .set('Authorization', token)
+        .send(badInput2)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+
+          const { error } = res.body;
+          expect(error).to.equal('Oops! did you mean red-flags or interventions. Check the spelling');
+
 
           done();
         });
@@ -331,11 +351,12 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(200);
 
           const { data } = res.body;
-          const { type } = data[0];
+          const { type, id } = data[0];
 
           expect(Array.isArray(data)).to.be.equal(true);
           expect(data.length).to.be.equal(1);
           expect(type).to.be.equal('red-flag');
+          expect(id).to.be.equal(redFlagId);
           done();
         });
     });
@@ -348,11 +369,13 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(200);
 
           const { data } = res.body;
-          const { type } = data[0];
+          const { type, id } = data[0];
 
           expect(Array.isArray(data)).to.be.equal(true);
           expect(data.length).to.be.equal(1);
           expect(type).to.be.equal('intervention');
+          expect(id).to.be.equal(interventionId);
+
           done();
         });
     });
@@ -421,7 +444,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
+          expect(res.body.error).to.equal('location format invalid. Example: (-)90.342345,(-)23.643245.');
 
           done();
         });
@@ -435,7 +458,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('location must be present');
+          expect(res.body.error).to.equal('location must be present');
 
           done();
         });
@@ -449,7 +472,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal(409);
-          expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+          expect(res.body.error).to.equal('this report is resolved');
           done();
         });
     });
@@ -482,7 +505,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.message).to.equal('Comment must be present');
+          expect(res.body.error).to.equal('Comment must be present');
           done();
         });
     });
@@ -495,7 +518,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(409);
           expect(res.body.status).to.equal(409);
-          expect(res.body.error).to.equal('report status is resolved, rejected or under-investigation');
+          expect(res.body.error).to.equal('this report is resolved');
 
           done();
         });
@@ -519,7 +542,7 @@ describe('ALLTEST', () => {
 
     it('should respond 200', (done) => {
       chai.request(server)
-        .patch(`/api/v1/intervention/${interventionId}/status`)
+        .patch(`/api/v1/interventions/${interventionId}/status`)
         .send({ status: 'resolved' })
         .set('Authorization', adminToken)
         .end((err, res) => {
@@ -535,12 +558,12 @@ describe('ALLTEST', () => {
   describe('DELETE /api/v1/red-flags/:id', () => {
     it('should respond with unauthorised', (done) => {
       chai.request(server)
-        .delete('/api/v1/red-flags/27')
+        .delete('/api/v1/red-flags/999')
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res).to.have.status(403);
-          expect(res.body.status).to.equal(403);
-          expect(res.body.error).to.equal('Unauthoirised');
+          expect(res).to.have.status(404);
+          expect(res.body.status).to.equal(404);
+          expect(res.body.error).to.equal('no such record');
 
           done();
         });
@@ -560,15 +583,14 @@ describe('ALLTEST', () => {
         });
     });
 
-    it('should remove file from database and have 200 as status code for interventions', (done) => {
+    it('should not have conflict as the report is in process', (done) => {
       chai.request(server)
         .delete(`/api/v1/interventions/${interventionId}`)
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res).to.have.status(200);
-          expect(res.body.status).to.equal(200);
-
-          expect(res.body.data[0].id).to.equal(interventionId);
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('this report is resolved');
 
           done();
         });

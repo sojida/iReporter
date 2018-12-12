@@ -129,6 +129,7 @@ async function isUserPresent(req, res, next) {
 }
 
 
+
 async function checkDetails(req, res, next) {
   const query = {
     text: 'SELECT * FROM users WHERE email = $1',

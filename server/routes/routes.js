@@ -41,6 +41,6 @@ router.delete('/interventions/:id', checkStatus, incidents.deleteReport);
 
 // admin
 router.patch('/red-flags/:id/status', validateStatus, isAdmin, isPresent, incidents.changeStatus);
-router.patch('/intervention/:id/status', validateStatus, isAdmin, isPresent, incidents.changeStatus);
+router.patch('/interventions/:id/status', validateStatus, isAdmin, isPresent, incidents.changeStatus);
 
 export default router;
