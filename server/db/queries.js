@@ -29,8 +29,8 @@ const createIncidentTable = () => {
           type VARCHAR(40) NOT NULL,
           location VARCHAR(40) ,
           status VARCHAR(40) ,
-          images bytea,
-          videos bytea,
+          images TEXT[],
+          videos TEXT[],
           comment TEXT,
           FOREIGN KEY (createdby) REFERENCES users (id) ON DELETE CASCADE
         )`;
