@@ -1,130 +1,98 @@
-import { incidents } from '../db';
-import util from '../utils/helperFunc';
+import db from '../db/user.db';
+import {
+  getAllIncidents,
+  createRecord,
+  getRecord,
+  updateProperty,
+  deleteRecord,
+  updateStatus,
 
-export default {
-  getIncidents: (req, res) => {
-    res.status(200).json({
-      status: 200,
-      data: [...incidents],
-    });
-  },
-
-  getRedFlags: (req, res) => {
-    const redFlags = util.findIncidentByType(incidents, 'red-flag');
-
-    return res.status(200).json({
-      status: 200,
-      data: [...redFlags],
-    });
-  },
-
-  getInterventions: (req, res) => {
-    const interventions = util.findIncidentByType(incidents, 'intervention');
-
-    return res.status(200).json({
-      status: 200,
-      data: [...interventions],
-    });
-  },
-
-  getRedFlagById: (req, res) => {
-    const report = util.findById(incidents, req.params.id, 'red-flag');
-
-    if (!report) {
-      return res.status(404).json({
-        status: 404,
-        message: 'no report found, check the id or the incident type',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      data: [report],
-    });
-  },
-
-  getInterventionById: (req, res) => {
-    const report = util.findById(incidents, req.params.id, 'intervention');
-
-    if (!report) {
-      return res.status(404).json({
-        status: 404,
-        message: 'no report found, check the id or the incident type',
-      });
-    }
-
-    return res.status(200).json({
-      status: 200,
-      data: [report],
-    });
-  },
-
-  postRecord: (req, res) => {
-    const newRecord = util.newReport(req);
-    incidents.push(newRecord);
-
-    return res.status(201).json({
-      status: 201,
-      data: [{
-        id: newRecord.id,
-        record: newRecord,
-        message: `created ${newRecord.type} record`,
-      }],
-    });
-  },
+} from '../db/controller.queries';
 
 
-  patchLocation: (req, res) => {
-    const value = util.changeProperty(incidents, req, 'location');
+async function getIncidents(req, res) {
+  const { rows } = await db.query(getAllIncidents());
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+  });
+}
 
-    const err = util.checkStatus(value, res);
+async function postRecord(req, res) {
+  const { rows } = await db.query(createRecord(req.body.type, req.data, 'now', req.body.status, req.body.comment, req.body.title, req.body.images, req.body.videos, req.body.location));
+  res.status(201).json({
+    status: 201,
+    record: rows[0],
+    message: `${rows[0].type} record created successfully`,
+  });
+}
 
-    if (!err) {
-      return res.status(200).json({
-        status: 200,
-        data: [{
-          id: parseFloat(req.params.id),
-          record: value.value,
-          message: 'Updated red-flag record',
-        }],
-      });
-    }
-    return err;
-  },
-
-  patchComment: (req, res) => {
-    const value = util.changeProperty(incidents, req, 'comment');
-
-    const err = util.checkStatus(value, res);
-
-    if (!err) {
-      return res.status(200).json({
-        status: 200,
-        data: [{
-          id: parseFloat(req.params.id),
-          record: value.value,
-          message: 'Updated red-flag record',
-        }],
-      });
-    }
-    return err;
-  },
-
-  deleteIncident: (req, res) => {
-    const record = util.deleteById(incidents, req, res);
+async function getReportType(req, res) {
+  const { rows } = await db.query(getRecord(req.type));
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+  });
+}
 
 
-    if (record) {
-      res.status(200).json({
-        status: 200,
-        data: [{
-          id: req.params.id,
-          record,
-          message: `${record.type} has been deleted`,
-        }],
-      });
-    }
-  },
+const getReport = (req, res) => res.status(200).json({
+  status: 200,
+  data: [...req.info],
+});
 
 
+async function patchLocation(req, res) {
+  const { rows } = await db.query(updateProperty('location', req.body.location, req.type, req.params.id));
+
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+    message: `Updated ${rows[0].type} record location`,
+  });
+}
+
+
+async function patchComment(req, res) {
+  const { rows } = await db.query(updateProperty('comment', req.body.comment, req.type, req.params.id));
+
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+    message: `Updated ${rows[0].type} record comment`,
+  });
+}
+
+
+async function deleteReport(req, res) {
+  const { rows } = await db.query(deleteRecord(req.type, req.params.id, req.data));
+
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+    message: `Deleted ${rows[0].type} record location`,
+  });
+}
+
+
+async function changeStatus(req, res) {
+  const { rows } = await db.query(updateStatus(req.body.status, req.params.id));
+
+  res.status(200).json({
+    status: 200,
+    data: [...rows],
+    message: `Updated ${rows[0].type} record status`,
+  });
+}
+
+
+module.exports = {
+  getIncidents,
+  postRecord,
+  getReportType,
+  getReport,
+  patchLocation,
+  patchComment,
+  deleteReport,
+  changeStatus,
 };
