@@ -9,6 +9,7 @@
     "build": "npm run clean && npm run build-babel",
     "start-build": "npm run build && node ./build/app.js",
     "start": "npm run start-build && node /build/app.js",
+    "heroku": "npm start && npm run createdb",
     "dev": "nodemon ./server/app.js --exec babel-watch",
     "createdb": "babel-node ./server/db/createdb.js",
     "dropdb": "babel-node ./server/db/dropdb.js",
