@@ -1,1 +1,1 @@
-web: npm start && npm run createdb
+web: npm run heroku
