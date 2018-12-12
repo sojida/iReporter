@@ -7,6 +7,13 @@ notifications:
 services:
   - postgresql
 
+
+postgres:
+  adapter: postgresql
+  database: myapp_test
+  username: postgres
+
+
 cache:
   directories:
     - "node_modules"
@@ -14,13 +21,14 @@ cache:
 env:
     global:
       - CC_TEST_REPORTER_ID=1c586984312150bae15f7b4aecd26eccd5b0adb54c2ae1eb27443a478fdff045
-      - DATABASE_URL=postgres://postgres@localhost:5432/travis_ci_test
+      - DATABASE_URL=postgres://postgres@localhost:5432/myapp_test
 
 before_script:
   - npm i nyc --save-dev
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
+  - "psql -c 'create database myapp_test;' -U postgres"
 
 script:
   - nyc --reporter=lcov --reporter=text-lcov npm test
