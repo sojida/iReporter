@@ -22,7 +22,7 @@ env:
     global:
       - CC_TEST_REPORTER_ID=1c586984312150bae15f7b4aecd26eccd5b0adb54c2ae1eb27443a478fdff045
       - DATABASE_URL=postgres://postgres@localhost:5432/myapp_test
-      - JWT_SECRET=supersecret
+
 
 before_script:
   - npm i nyc --save-dev
