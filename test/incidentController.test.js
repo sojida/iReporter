@@ -31,24 +31,27 @@ let adminId;
 
 
 describe('ALLTEST', () => {
-  before(async () => {
+  before(async (done) => {
     try {
       await db.query(createUsersTable());
       await db.query(createIncidentTable());
+      
       console.log('created tables');
+      done();
     } catch (error) {
       console.log(error);
     }
   });
 
 
-  after(async () => {
+  after(async (done) => {
     try {
       await db.query(deleteUser(userId));
       await db.query(deleteUser(adminId));
       await db.query(deleteIncidents(redFlagId));
       await db.query(deleteIncidents(redFlagId2));
       await db.query(deleteIncidents(interventionId));
+      done();
     } catch (error) {
       console.log(error);
     }
