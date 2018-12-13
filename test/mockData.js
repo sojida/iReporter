@@ -5,21 +5,17 @@ const user = {
   email: 'soji@gmail.com',
   phoneNumber: '09012988309',
   username: 'soji_dan',
-  isadmin: false,
   password: '12345678',
   password2: '12345678',
 };
 
 const admin = {
-  firstname: 'Soji',
+  firstname: 'Adesoji',
   lastname: 'Daniel',
-  othernames: 'Paul',
-  email: 'soji@yahoo.com',
-  phoneNumber: '09010000000',
-  username: 'soji_dan_admin',
-  isadmin: true,
-  password: '12345678',
-  password2: '12345678',
+  othernames: 'Oluwagbogo',
+  email: 'sojiman@gmail.com',
+  phoneNumber: '09011111111',
+  username: 'Superman',
 };
 
 

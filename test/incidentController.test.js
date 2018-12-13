@@ -46,7 +46,6 @@ describe('ALLTEST', () => {
   after(async () => {
     try {
       await db.query(deleteUser(userId));
-      await db.query(deleteUser(adminId));
       await db.query(deleteIncidents(redFlagId));
       await db.query(deleteIncidents(redFlagId2));
       await db.query(deleteIncidents(interventionId));
@@ -97,37 +96,6 @@ describe('ALLTEST', () => {
           done();
         });
     });
-
-    it('should create new admin', (done) => {
-      chai.request(server)
-        .post('/api/v1/auth/signup')
-        .send(admin)
-        .end((err, res) => {
-          expect(res).to.have.status(201);
-          expect(res.body.status).to.equal(201);
-
-          adminId = res.body.data[0].user.id;
-          adminToken = res.body.data[0].token;
-          const {
-            firstname,
-            lastname,
-            othernames,
-            email,
-            phonenumber,
-            username,
-            isadmin,
-          } = res.body.data[0].user;
-
-          expect(firstname).to.equal(admin.firstname);
-          expect(lastname).to.equal(admin.lastname);
-          expect(othernames).to.equal(admin.othernames);
-          expect(email).to.equal(admin.email);
-          expect(phonenumber).to.equal(admin.phoneNumber);
-          expect(username).to.equal(admin.username);
-          expect(isadmin).to.equal(true);
-          done();
-        });
-    });
   });
 
 
@@ -161,6 +129,40 @@ describe('ALLTEST', () => {
           expect(email).to.equal(user.email);
           expect(phonenumber).to.equal(user.phoneNumber);
           expect(username).to.equal(user.username);
+          done();
+        });
+    });
+
+    it('should login admin', (done) => {
+      chai.request(server)
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'sojiman@gmail.com',
+          password: 'admin1234',
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+
+          adminToken = res.body.data[0].token;
+          adminId = res.body.data[0].user.id;
+
+
+          const {
+            firstname,
+            lastname,
+            othernames,
+            email,
+            phonenumber,
+            username,
+          } = res.body.data[0].user;
+
+          expect(firstname).to.equal(admin.firstname);
+          expect(lastname).to.equal(admin.lastname);
+          expect(othernames).to.equal(admin.othernames);
+          expect(email).to.equal(admin.email);
+          expect(phonenumber).to.equal(admin.phoneNumber);
+          expect(username).to.equal(admin.username);
           done();
         });
     });
@@ -548,12 +550,24 @@ describe('ALLTEST', () => {
 
     it('should not return red flag record that is not in database', (done) => {
       chai.request(server)
-        .get('/api/v1/red-flags/0')
+        .get('/api/v1/red-flags/999')
         .set('Authorization', token)
         .end((err, res) => {
           expect(res).to.have.status(404);
           expect(res.body.status).to.be.equal(404);
           expect(res.body.error).to.be.equal('oops! Nothing found. Check the type of record or the id');
+          done();
+        });
+    });
+
+    it('should not return red flag record that is not in database', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-flags/-2')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.be.equal(400);
+          expect(res.body.error).to.be.equal('params must be greater than 0');
           done();
         });
     });
@@ -598,9 +612,9 @@ describe('ALLTEST', () => {
         .get('/api/v1/interventions/0')
         .set('Authorization', token)
         .end((err, res) => {
-          expect(res).to.have.status(404);
-          expect(res.body.status).to.be.equal(404);
-          expect(res.body.error).to.be.equal('oops! Nothing found. Check the type of record or the id');
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.be.equal(400);
+          expect(res.body.error).to.be.equal('params must be greater than 0');
           done();
         });
     });
