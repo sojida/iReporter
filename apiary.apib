@@ -1,0 +1,88 @@
+FORMAT: 1A
+HOST: https://sojida-ireporter.herokuapp.com/api/v1/
+
+# iReporter
+
+Polls is a simple API allowing consumers to view polls and vote in them.
+
+## Sign Up [/signup]
+
+### Sign Up User [POST]
+
++ Request (application/json)
+
+        {
+            "firstname":"Sojidan",
+            "lastname":"Daniel",
+            "othernames":"Paul",
+            "email":"friday@ymail.com",
+            "phoneNumber":"09012988309",
+            "username":"soji",
+            "password": "12345678",
+            "password2": "12345678"
+        }
+
++ Response 200 (application/json)
+
+        {
+            "status": 201,
+            "data": [
+                {
+                    "token": <token>,
+                    "user": {
+                        "id": <userId>,
+                        "firstname": "Sojidan",
+                        "lastname": "Daniel",
+                        "othernames": "Paul",
+                        "email": "friday@ymail.com",
+                        "phonenumber": "09012988309",
+                        "username": "soji",
+                        "registered": "2018-12-12T22:13:04.063Z",
+                        "isadmin": null
+                    }
+                }
+            ]
+        }
+
+### Create a New Question [POST]
+
+
++ Request (application/json)
+
+        {
+            "firstname":"Sojidan",
+            "lastname":"Daniel",
+            "othernames":"Paul",
+            "email":"monday@ymail.com",
+            "phoneNumber":"09012988389",
+            "username":"Paul",
+            "password": "12345678",
+            "password2": "12345678",
+            "isadmin": true
+        }
+
++ Response 201 (application/json)
+
+
+    + Body
+
+        {
+            "status": 201,
+            "data": [
+                {
+                    "token": "eyJhbGciOiJIUzI1NiJ9.Mw.MWTOWgZO1t7yoLOmN4cEOcH5L3_gDmqwrQ1xchh3-SU",
+                    "user": {
+                        "id": 3,
+                        "firstname": "Sojidan",
+                        "lastname": "Daniel",
+                        "othernames": "Paul",
+                        "email": "monday@ymail.com",
+                        "phonenumber": "09012988389",
+                        "username": "Paul",
+                        "registered": "2018-12-13T12:36:27.238Z",
+                        "isadmin": true
+                    },
+                    "message": "Sign up succesful"
+                }
+            ]
+        }
