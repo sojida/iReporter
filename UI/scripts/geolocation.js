@@ -9,12 +9,12 @@ locate_btn.addEventListener('click', (e) => {
     function success(position) {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        location_field.value = `${latitude.toFixed(6)} , ${longitude.toFixed(6)}`
+        location_field.value = `${latitude.toFixed(6)},${longitude.toFixed(6)}`
 
         const latlon = latitude + "," + longitude;
 
 
-        const map_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=16&size=600x400&sensor=false&key=AIzaSyABDhT6kOJ31VVKeNgM4ByXbyhFdj-09TM";
+        const map_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=16&size=400x300&sensor=false&key=AIzaSyABDhT6kOJ31VVKeNgM4ByXbyhFdj-09TM";
 
         document.getElementById("map").innerHTML = `<img src=${map_url} alt='google map'>`;
 
@@ -46,4 +46,21 @@ locate_btn.addEventListener('click', (e) => {
 
 
 })
+
+    // google.maps.event.addDomListener(window, load, initialize)
+
+    // function initialize () {
+    //     const autocomplete = new google.maps.places.Autocomplete(location_field)
+
+    //     google.maps.event.addListener(autocomplete, 'place_changed', function(){
+
+    //         const places = autocomplete.getPlace();
+    //         let location = `<b>${places.geometry.location}</b>`
+
+    //         location_field.innerHTML = location
+    //     })
+
+    // }
+
+   
 

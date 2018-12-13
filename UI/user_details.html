@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="iReporter">
+	<meta name="keywords" content="anti-corruption, intervention, report, witness, corruption">
+	<meta name="author" content="Adesoji Daniel">
+	<title>iReporter | All Reports</title>
+	<link rel="stylesheet" type="text/css" href="./css/index.css">
+	<link rel="stylesheet" type="text/css" href="./css/report.css">
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<div id="logo">
+				<h1><a href="index.html" class="logo-txt">iReporter</a></h1>
+			</div>
+			<nav>
+				<ul>
+					<li><a href="profile.html">All Reports</a></li>
+					<li><a href="myprofile.html" class="current">My Reports</a></li>
+					<li><a href="new-report.html">New Report</a></li>
+				</ul>
+			</nav> 
+		</div>
+	</header>
+
+
+	<section>
+		<div class="container">
+
+			<div id="full-report">
+
+                <div class="status">
+                    <p>id: 12343455</p>
+                    <p class="draft">drafted</p>
+                  
+                </div>
+
+
+                <div class="head">
+                    <h1>Police Harassment</h1>
+                </div>
+
+                <div class="comment">
+                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                    when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
+                     remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
+                      like Aldus PageMaker including versions of Lorem Ipsum.</p>
+                </div>
+
+                <div class="details">
+                    <p><b>Location</b>: Lagos</p>
+                    <p><b>Created by</b>: Daniel</p>
+                    <p><b>Created on</b> : Feb 2018</p>
+                </div>
+
+                <div class="options">
+                    <button class="no"><a href="edit.html">Edit</a></button>
+                    <button id="modal-btn" class= "yes">Delete</button>
+                </div>
+
+                <div class="media">
+                    <h3>Images:</h3>
+                    <div class="images">
+                        <div><img src="images/SARS-678x381.png" alt=""></div>
+                        <div><img src="images/Police-Brutality.jpg" alt=""></div>
+                    </div>
+                    <h3>Videos:</h3>
+                    <div class="videos">
+                        <div>
+                            <video controls><source type="video/mp4" src="images/Nigeria- police harass okada drivers - YouTube.MP4"></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modal-view" class="modal">
+                        <div class="modal-content">
+                            <h3>Are you sure you want to delete this report?</h3>
+                            <p><span class="yes">Yes</span> <span class="no">No</span> </p>
+                        </div>
+                
+                    </div>
+
+
+            </div>
+			
+		</div>
+	</section>
+
+	<footer>
+		<p>iReporter, Copyright &copy; 2018</p>
+	</footer>
+	
+<script src="/scripts/modal2.js"></script>
+</body>
+</html>
