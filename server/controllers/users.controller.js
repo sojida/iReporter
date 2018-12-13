@@ -18,6 +18,7 @@ async function registerUser(req, res) {
     data: [{
       token,
       user: rows[0],
+      message: 'Sign up succesful',
     }],
   });
 }
@@ -31,6 +32,7 @@ async function loginUser(req, res) {
     data: [{
       token: req.token,
       user: req.user,
+      message: 'Sign in succesful',
     }],
   });
 }
