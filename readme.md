@@ -10,7 +10,7 @@ Corruption is a huge bane to Africa’s development. African countries must deve
 
 <b> View UI Template:</b>https://sojida.github.io/iReporter/<br/>
 <b> Test API Endpoints Here: </b> https://sojida-ireporter.herokuapp.com/ <br/>
-<b> Pivotal Tracker: </b> https://www.pivotaltracker.com/n/projects/2226753
+<b> Pivotal Tracker: </b> https://www.pivotaltracker.com/n/projects/2226753<br/>
 <b> Api Documentation: </b> https://ireporter5.docs.apiary.io
 
 ## Table of content
