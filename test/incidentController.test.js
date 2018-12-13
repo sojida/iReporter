@@ -3,10 +3,10 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import server from '../server/app';
-import db from '../server/db/user.db';
+import db from '../server/db/db';
 import {
   createUsersTable, createIncidentTable, deleteUser, deleteIncidents,
-} from '../server/db/queries';
+} from '../server/db/tables.queries';
 
 import {
   goodInterventionInput,
@@ -76,7 +76,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(201);
           expect(res.body.status).to.equal(201);
-          
+
           const {
             firstname,
             lastname,
@@ -145,7 +145,6 @@ describe('ALLTEST', () => {
           token = res.body.data[0].token;
           userId = res.body.data[0].user.id;
 
-         
 
           const {
             firstname,
@@ -162,6 +161,134 @@ describe('ALLTEST', () => {
           expect(email).to.equal(user.email);
           expect(phonenumber).to.equal(user.phoneNumber);
           expect(username).to.equal(user.username);
+          done();
+        });
+    });
+
+    it('should not create new user with no credentials', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send({})
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].firstname).to.equal('firstname must be present');
+          done();
+        });
+    });
+
+    it('should not create new user email already used', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('That email has already been used');
+          done();
+        });
+    });
+
+    it('should not create new user : username is same', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user,
+          user.email = 'user@gmail.com')
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('That username has already been used');
+          done();
+        });
+    });
+
+    it('should not create new user : phonenumber alreadty exists', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user,
+          user.username = 'user2',
+          user.email = 'user2@gmail.com')
+        .end((err, res) => {
+          expect(res).to.have.status(409);
+          expect(res.body.status).to.equal(409);
+          expect(res.body.error).to.equal('That phonenumber has already been used');
+          done();
+        });
+    });
+
+    it('should not create new user: password match', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user, user.password = '12345678', user.password2 = '123456789')
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].password).to.equal('password do not match');
+          done();
+        });
+    });
+
+    it('should not create new user: password length', (done) => {
+      chai.request(server)
+        .post('/auth/signup')
+        .send(user, user.password = '1234')
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].password).to.equal('password can have uppercase, lowercase, numbers, "@" and "-" ');
+          done();
+        });
+    });
+
+
+    it('should not login user', (done) => {
+      chai.request(server)
+        .post('/auth/login')
+        .send({})
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].email).to.equal('email is required');
+          done();
+        });
+    });
+
+    it('should not login user with invalid email', (done) => {
+      chai.request(server)
+        .post('/auth/login')
+        .send(user,
+          user.email = 'sojid')
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].email).to.equal('email must be valid format: yorname@mail.com');
+          done();
+        });
+    });
+
+    it('should not login user with invalid detail email', (done) => {
+      chai.request(server)
+        .post('/auth/login')
+        .send(user,
+          user.email = 'soji2@gmail.com')
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('invalid details');
+          done();
+        });
+    });
+
+    it('should not login user with invalid detail password', (done) => {
+      chai.request(server)
+        .post('/auth/login')
+        .send(user,
+          user.email = 'soji@gmail.com',
+          user.password = '123456789')
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('invalid details');
           done();
         });
     });
@@ -234,6 +361,35 @@ describe('ALLTEST', () => {
         });
     });
 
+    it('should return error for wrong routing', (done) => {
+      chai.request(server)
+        .post('/api/v1/red-flags')
+        .set('Authorization', token)
+        .send(goodInterventionInput)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].type).to.equal('please use the right route');
+          done();
+        });
+    });
+
+    it('should return error for wrong routing', (done) => {
+      chai.request(server)
+        .post('/api/v1/interventions')
+        .set('Authorization', token)
+        .send(
+          goodInterventionInput,
+          goodInterventionInput.type = 'interven***',
+        )
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.errors[0].type).to.equal('type can only be red-flag or intervention');
+          done();
+        });
+    });
+
     it('should not create new record because of bad inputs', (done) => {
       chai.request(server)
         .post('/api/v1/red-flags')
@@ -244,7 +400,7 @@ describe('ALLTEST', () => {
           expect(res.body.status).to.equal(400);
 
           const { errors } = res.body;
-        
+
           expect(errors[0].type).to.equal('type must be present');
           expect(errors[1].title).to.equal('title must be present');
 
@@ -302,6 +458,16 @@ describe('ALLTEST', () => {
           expect(Array.isArray(data)).to.be.equal(true);
           expect(res.body.status).to.be.equal(200);
           expect(data[0]).to.contain.keys('id', 'type', 'status');
+          done();
+        });
+    });
+
+    it('should respond with no access', (done) => {
+      chai.request(server)
+        .get('/api/v1/incidents')
+        .end((err, res) => {
+          expect(res).to.have.status(403);
+          expect(res.body.error).to.equal('you need access');
           done();
         });
     });
@@ -388,6 +554,41 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(404);
           expect(res.body.status).to.be.equal(404);
           expect(res.body.error).to.be.equal('oops! Nothing found. Check the type of record or the id');
+          done();
+        });
+    });
+
+    it('should return with wrong route error', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-fla*')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.be.equal(400);
+          expect(res.body.error).to.be.equal('Oops! did you mean red-flags or interventions. Check the spelling');
+          done();
+        });
+    });
+
+    it('should return error for wrong param type', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-flags/ABC')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error).to.equal('params must be a number');
+          done();
+        });
+    });
+
+    it('should return documentation page', (done) => {
+      chai.request(server)
+        .get('/api/v1/red-flags/1/sdf')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equal('check documentation on routes');
           done();
         });
     });
@@ -540,7 +741,33 @@ describe('ALLTEST', () => {
         });
     });
 
-    it('should respond 200', (done) => {
+    it('should change to rejected', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/interventions/${interventionId}/status`)
+        .send({ status: 'rejected' })
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body.data[0].status).to.equal('rejected');
+          done();
+        });
+    });
+
+    it('should change to investigating', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/interventions/${interventionId}/status`)
+        .send({ status: 'investigating' })
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equal(200);
+          expect(res.body.data[0].status).to.equal('investigating');
+          done();
+        });
+    });
+
+    it('should change to resolved', (done) => {
       chai.request(server)
         .patch(`/api/v1/interventions/${interventionId}/status`)
         .send({ status: 'resolved' })
@@ -549,6 +776,32 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(200);
           expect(res.body.status).to.equal(200);
           expect(res.body.data[0].status).to.equal('resolved');
+          done();
+        });
+    });
+
+    it('should return error on wrong input type', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/interventions/${interventionId}/status`)
+        .send({ status: 'resol*' })
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error[0].status).to.equal('error type must be: investigating, rejected or resolved');
+          done();
+        });
+    });
+
+    it('should respond with error no status body', (done) => {
+      chai.request(server)
+        .patch(`/api/v1/interventions/${interventionId}/status`)
+        .send({})
+        .set('Authorization', adminToken)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equal(400);
+          expect(res.body.error[0].status).to.equal('status must be present');
           done();
         });
     });
@@ -583,7 +836,7 @@ describe('ALLTEST', () => {
         });
     });
 
-    it('should not have conflict as the report is in process', (done) => {
+    it('should have conflict as the report is in process', (done) => {
       chai.request(server)
         .delete(`/api/v1/interventions/${interventionId}`)
         .set('Authorization', token)

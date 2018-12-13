@@ -14,6 +14,10 @@ app.get('/', (req, res) => {
 app.use('/auth', auth);
 app.use('/api/v1', routes);
 
+app.use((req, res) => {
+  res.status(404).json({ error: 'check documentation on routes' });
+});
+
 
 const port = process.env.PORT || 3000;
 

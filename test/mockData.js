@@ -15,7 +15,7 @@ const admin = {
   lastname: 'Daniel',
   othernames: 'Paul',
   email: 'soji@yahoo.com',
-  phoneNumber: '09012988309',
+  phoneNumber: '09010000000',
   username: 'soji_dan_admin',
   isadmin: true,
   password: '12345678',

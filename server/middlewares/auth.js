@@ -1,24 +1,17 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import db from '../db/user.db';
+import db from '../db/db';
 import { getById, status } from '../db/controller.queries';
 
 
 dotenv.config();
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization || req.headers['x-access-token'];
+  const token = req.headers.authorization;
   if (token) {
     jwt.verify(token, process.env.JWT_SECRET, (err, data) => {
-      if (err) {
-        res.status(403).json({
-          status: 403,
-          message: 'no access',
-        });
-      } else {
-        req.data = data;
-        next();
-      }
+      req.data = data;
+      next();
     });
   } else {
     res.status(403).json({
@@ -34,30 +27,22 @@ async function isAdmin(req, res, next) {
     values: [req.data],
   };
 
-  try {
-    const { rows } = await db.query(query);
-    if (!rows.length) {
-      return res.status(404).json({
-        status: 404,
-        error: 'This is not user',
-      });
-    }
-
-    if (!rows[0].isadmin) {
-      return res.status(401).json({
-        status: 401,
-        error: 'This user is not an Admin',
-      });
-    }
-
-    next();
-  } catch (error) {
-    res.status(500).json({
-      status: 500,
-      err: error,
-      error: 'Server error! Try again soon',
+  const { rows } = await db.query(query);
+  if (!rows.length) {
+    return res.status(404).json({
+      status: 404,
+      error: 'This is not user',
     });
   }
+
+  if (!rows[0].isadmin) {
+    return res.status(401).json({
+      status: 401,
+      error: 'This user is not an Admin',
+    });
+  }
+
+  next();
 }
 
 const validateRoute = (req, res, next) => {
@@ -141,6 +126,22 @@ async function checkStatus(req, res, next) {
   next();
 }
 
+const validateParams = (req, res, next) => {
+  const id = req.path.split(['/']);
+
+  if (id[2]) {
+    if (isNaN(id[2])) {
+      return res.status(400).json({
+        status: 400,
+        error: 'params must be a number',
+      });
+    }
+  }
+
+
+  next();
+};
+
 
 module.exports = {
   verifyToken,
@@ -148,4 +149,5 @@ module.exports = {
   isPresent,
   checkStatus,
   validateRoute,
+  validateParams,
 };
