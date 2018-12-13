@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { checkUser } from '../db/controller.queries';
-import db from '../db/user.db';
+import db from '../db/db';
 
 
 dotenv.config();
@@ -106,20 +106,27 @@ const validateLogin = (req, res, next) => {
 
 
 async function isUserPresent(req, res, next) {
-  const { rows } = await db.query(checkUser(req.body.email, req.body.username));
+  const { rows } = await db.query(checkUser(req.body.email, req.body.username, req.body.phoneNumber));
 
   if (rows.length) {
     if (rows[0].email === req.body.email) {
-      return res.status(400).json({
-        status: 400,
+      return res.status(409).json({
+        status: 409,
         error: 'That email has already been used',
       });
     }
 
     if (rows[0].username === req.body.username) {
-      return res.status(400).json({
-        status: 400,
+      return res.status(409).json({
+        status: 409,
         error: 'That username has already been used',
+      });
+    }
+
+    if (rows[0].phonenumber === req.body.phoneNumber) {
+      return res.status(409).json({
+        status: 409,
+        error: 'That phonenumber has already been used',
       });
     }
   }
@@ -127,7 +134,6 @@ async function isUserPresent(req, res, next) {
 
   next();
 }
-
 
 
 async function checkDetails(req, res, next) {

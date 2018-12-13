@@ -1,11 +1,13 @@
 import express from 'express';
 import incidents from '../controllers/incidents.controller';
+
 import {
   verifyToken,
   isAdmin,
   isPresent,
   checkStatus,
   validateRoute,
+  validateParams,
 } from '../middlewares/auth';
 
 import {
@@ -18,7 +20,7 @@ import {
 
 const router = express.Router();
 
-router.use(validateRoute, verifyToken);
+router.use(validateRoute, validateParams, verifyToken);
 
 // get all incidents
 router.get('/incidents', incidents.getIncidents);

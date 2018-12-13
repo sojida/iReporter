@@ -41,9 +41,9 @@ const createUser = (firstname, lastname, othernames, username, phonenumber, emai
   values: [firstname, lastname, othernames, username, phonenumber, email, isadmin, date, password],
 });
 
-const checkUser = (email, username) => ({
-  text: 'SELECT * FROM users WHERE email = $1 OR USERNAME = $2',
-  values: [email, username],
+const checkUser = (email, username, phoneNumber) => ({
+  text: 'SELECT * FROM users WHERE email = $1 OR username = $2 OR phonenumber = $3',
+  values: [email, username, phoneNumber],
 });
 
 module.exports = {

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import db from '../db/user.db';
+import db from '../db/db';
 import { createUser } from '../db/controller.queries';
 
 dotenv.config();

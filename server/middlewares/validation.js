@@ -131,7 +131,7 @@ const validateStatus = (req, res, next) => {
   } else {
     res.status(400).json({
       status: 400,
-      message: error,
+      error,
     });
   }
 };
