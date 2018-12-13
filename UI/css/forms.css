@@ -36,7 +36,7 @@ main{
 .btn2{
     height: 2rem;
     width: 40%;
-    background: #4BB448;
+    background: #24292E;
     cursor: pointer;
     margin-top: 10px;
     border-radius: 5px;
@@ -45,6 +45,7 @@ main{
     padding: 0 20px;
     border: none;
     text-align: center;
+    color: #ffffff;
 }
 
 
