@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
   res.status(200).json({ welcome: 'IReporter Api' });
 });
 
-app.use('/auth', auth);
+app.use('/api/v1/auth', auth);
 app.use('/api/v1', routes);
 
 app.use((req, res) => {

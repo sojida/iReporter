@@ -71,7 +71,7 @@ describe('ALLTEST', () => {
   describe('REGISTER ', () => {
     it('should create new user', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user)
         .end((err, res) => {
           expect(res).to.have.status(201);
@@ -100,7 +100,7 @@ describe('ALLTEST', () => {
 
     it('should create new admin', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(admin)
         .end((err, res) => {
           expect(res).to.have.status(201);
@@ -134,7 +134,7 @@ describe('ALLTEST', () => {
   describe('LOGIN ', () => {
     it('should login user', (done) => {
       chai.request(server)
-        .post('/auth/login')
+        .post('/api/v1/auth/login')
         .send({
           email: 'soji@gmail.com',
           password: '12345678',
@@ -167,7 +167,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user with no credentials', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send({})
         .end((err, res) => {
           expect(res).to.have.status(400);
@@ -179,7 +179,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user email already used', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user)
         .end((err, res) => {
           expect(res).to.have.status(409);
@@ -191,7 +191,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user : username is same', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user,
           user.email = 'user@gmail.com')
         .end((err, res) => {
@@ -204,7 +204,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user : phonenumber alreadty exists', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user,
           user.username = 'user2',
           user.email = 'user2@gmail.com')
@@ -218,7 +218,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user: password match', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user, user.password = '12345678', user.password2 = '123456789')
         .end((err, res) => {
           expect(res).to.have.status(400);
@@ -230,7 +230,7 @@ describe('ALLTEST', () => {
 
     it('should not create new user: password length', (done) => {
       chai.request(server)
-        .post('/auth/signup')
+        .post('/api/v1/auth/signup')
         .send(user, user.password = '1234')
         .end((err, res) => {
           expect(res).to.have.status(400);
@@ -243,7 +243,7 @@ describe('ALLTEST', () => {
 
     it('should not login user', (done) => {
       chai.request(server)
-        .post('/auth/login')
+        .post('/api/v1/auth/login')
         .send({})
         .end((err, res) => {
           expect(res).to.have.status(400);
@@ -255,7 +255,7 @@ describe('ALLTEST', () => {
 
     it('should not login user with invalid email', (done) => {
       chai.request(server)
-        .post('/auth/login')
+        .post('/api/v1/auth/login')
         .send(user,
           user.email = 'sojid')
         .end((err, res) => {
@@ -268,7 +268,7 @@ describe('ALLTEST', () => {
 
     it('should not login user with invalid detail email', (done) => {
       chai.request(server)
-        .post('/auth/login')
+        .post('/api/v1/auth/login')
         .send(user,
           user.email = 'soji2@gmail.com')
         .end((err, res) => {
@@ -281,7 +281,7 @@ describe('ALLTEST', () => {
 
     it('should not login user with invalid detail password', (done) => {
       chai.request(server)
-        .post('/auth/login')
+        .post('/api/v1/auth/login')
         .send(user,
           user.email = 'soji@gmail.com',
           user.password = '123456789')
