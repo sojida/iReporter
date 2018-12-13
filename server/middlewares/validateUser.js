@@ -147,6 +147,7 @@ async function checkDetails(req, res, next) {
   };
 
   let token;
+  let pass;
 
   const { rows } = await db.query(query);
 
@@ -157,7 +158,12 @@ async function checkDetails(req, res, next) {
     });
   }
 
-  const pass = bcrypt.compareSync(req.body.password, rows[0].password);
+  token = jwt.sign(rows[0].id, process.env.JWT_SECRET);
+  if (rows[0].isadmin){
+    pass = (req.body.password === rows[0].password)
+  } else {
+    pass = bcrypt.compareSync(req.body.password, rows[0].password);
+  }
 
   if (!pass) {
     return res.status(400).json({
@@ -166,9 +172,9 @@ async function checkDetails(req, res, next) {
     });
   }
 
-  if (rows.length) {
-    token = jwt.sign(rows[0].id, process.env.JWT_SECRET);
-  }
+ 
+  
+
 
   req.token = token;
   req.user = rows[0];
