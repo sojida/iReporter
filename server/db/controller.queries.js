@@ -38,7 +38,7 @@ const updateStatus = (process, id) => ({
 
 const createUser = (firstname, lastname, othernames, username, phonenumber, email, isadmin, date = 'now', password) => ({
   text: 'INSERT INTO users(firstname, lastname, othernames, username, phoneNumber, email, isAdmin, registered, password) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
-  values: [firstname, lastname, othernames, username, phonenumber, email, isadmin, date, password],
+  values: [firstname, lastname, othernames, username, phonenumber, email, 'false', date, password],
 });
 
 const checkUser = (email, username, phoneNumber) => ({

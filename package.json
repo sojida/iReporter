@@ -9,10 +9,11 @@
     "build": "npm run clean && npm run build-babel",
     "start-build": "npm run build && node ./build/app.js",
     "start": "npm run start-build && node /build/app.js",
-    "heroku": "npm run createdb && npm start",
+    "heroku": "npm run dropdb && npm run createdb && npm start",
     "dev": "nodemon ./server/app.js --exec babel-watch",
     "createdb": "babel-node ./server/db/createdb.js",
     "dropdb": "babel-node ./server/db/dropdb.js",
+    "drop-create": "npm run dropdb && npm run createdb",
     "test": "nyc --reporter=html --reporter=text --reporter=lcov mocha --require babel-register ./test/*.test.js --timeout 10000 --exit",
     "coverage": "nyc --reporter=html --reporter=text --reporter=lcov mocha --reporter spec --require babel-register ./test/*test.js --exit",
     "coveralls": "npm run coverage -- --report lcovonly && cat coverage/lcov.info | coveralls"
