@@ -5,6 +5,8 @@
   font-size: 1rem;
   line-height: 1.5;
   background-color: #f4f4f4;
+  
+  
  
 }
 
@@ -21,8 +23,6 @@
 header {
   background: #24292E;
   color: #ffffff;
-  padding-top: 10px;
-  min-height: 70px;
   border-bottom: 2px solid white;
     
 }
@@ -30,8 +30,8 @@ header {
 header a {
   color: #ffffff;
   text-decoration: none;
-  font-size: 1rem;
-  padding: 10px;
+  font-size: 0.8rem;
+  padding: 5px;
   font-weight: bold;
 }
 
@@ -42,9 +42,8 @@ header ul{
 }
 
 header li{
-  
   display: inline;
-  padding: 0 20px;
+  padding: 0 10px;
 
 }
 
@@ -55,7 +54,7 @@ header #logo{
 }
 
 header #logo .logo-txt{
-  font-size:2.3rem;
+  font-size:2rem;
 }
 
 header #logo h1{
@@ -78,7 +77,7 @@ header a:hover {
 
 /*show case*/
 #showcase{
-  min-height: 90vh;
+  min-height: 94vh;
   background: url('../images/thumbsup.jpg') no-repeat 0;
   background-size: cover;
 }
@@ -147,6 +146,11 @@ header a:hover {
   
 }
 
+.form-content-home > .sign-now > a{
+  text-decoration: none;
+  color: #fff;
+}
+
 #form-container .sign-now{
   font-size: 2rem;
   font-weight: bold;
@@ -176,15 +180,49 @@ header a:hover {
   border: none;
 }
 
-footer{
-  color: #24292E;
-  padding: 1px;
-  text-align:center;
-  border-top: 2px solid #24292E;
-  width: 70%;
-  margin: 100px auto 0;
+/* Pagination links */
+.pagination{
+  text-align: center;
 }
 
+.pagination a {
+  color: black;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+
+.pagination a.active {
+  background-color: #24292E;
+  color: white;
+}
+
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+
+
+
+/**footer*/
+
+footer{
+  position:  fixed;
+  bottom: 0;
+  color: #fff;
+  padding: 1px;
+  text-align:center;
+  border-top: 2px solid #24292e;
+  width: 100%;
+  background-color: #24292e;
+  
+}
+
+footer a {
+  text-decoration: none;
+  color: #fff;
+
+}
 
 /*media queries*/
 @media(max-width: 960px){
