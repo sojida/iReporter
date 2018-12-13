@@ -62,5 +62,16 @@ locate_btn.addEventListener('click', (e) => {
 
     // }
 
+    const locateMe = document.getElementById('locateme')
+
+    console.log(locateMe)
+
+function locatePlaces () {
+    
+
+    const autocomplete = new google.maps.places.Autocomplete(locateMe)
+    console.log(autocomplete)
+}
+
    
 
