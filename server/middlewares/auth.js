@@ -137,13 +137,12 @@ const validateParams = (req, res, next) => {
       });
     }
 
-    if (parseFloat(id[2]) <= 0 ) {
+    if (parseFloat(id[2]) <= 0) {
       return res.status(400).json({
         status: 400,
         error: 'params must be greater than 0',
       });
     }
-
   }
 
 
