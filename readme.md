@@ -86,6 +86,10 @@ Codes are written in accordance with Airbnb JavaScript style guide, see [here](h
 <table>
 <tr><th>HTTP VERB</th><th>ENDPOINT</th><th>FUNCTIONALITY</th></tr>
 
+<tr><td>POST</td> <td>api/v1/auth/signup</td> <td>register user</td></tr>
+
+<tr><td>POST</td> <td>api/v1/auth/login</td> <td>sign in user</td></tr>
+
 <tr><td>GET</td> <td>api/v1/incidents</td> <td>Get all the incidents</td></tr>
 
 <tr><td>GET</td> <td>api/v1/red-flags</td>  <td>Get all red-flag records</td></tr>
@@ -106,7 +110,11 @@ Codes are written in accordance with Airbnb JavaScript style guide, see [here](h
 
 <tr><td>DELETE</td> <td>api/v1/red-flags/:red-flag-id</td>  <td>delete red-flag record</td></tr>
 
-<tr><td>DELETE</td> <td>api/v1/interventions/:red-flag-id</td>  <td>delete inervention record</td></tr>
+<tr><td>DELETE</td> <td>api/v1/interventions/:intervention-id</td>  <td>delete inervention record</td></tr>
+
+<tr><td>PATCH</td> <td>api/v1/red-flag/:red-flag-id/status</td>  <td>change red-flag status</td></tr>
+
+<tr><td>PATCH</td> <td>api/v1/intervention/:intervention-id/status</td>  <td>change intervention status</td></tr>
 
 </table>
 
