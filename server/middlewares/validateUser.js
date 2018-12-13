@@ -106,7 +106,11 @@ const validateLogin = (req, res, next) => {
 
 
 async function isUserPresent(req, res, next) {
-  const { rows } = await db.query(checkUser(req.body.email, req.body.username, req.body.phoneNumber));
+  const { rows } = await db.query(checkUser(
+    req.body.email,
+    req.body.username,
+    req.body.phoneNumber,
+    ));
 
   if (rows.length) {
     if (rows[0].email === req.body.email) {

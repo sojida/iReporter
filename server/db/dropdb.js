@@ -1,11 +1,11 @@
-import { dropIncidentTable, dropUsersTable } from './queries';
-import db from './user.db';
+import { dropIncidentTable, dropUsersTable } from './tables.queries';
+import db from './db';
 
 async function dropAllTables() {
-    await db.query(dropIncidentTable());
-    await db.query(dropUsersTable());
+  await db.query(dropIncidentTable());
+  await db.query(dropUsersTable());
 }
 
 dropAllTables()
-    .then(() => console.log('tables droped'))
-    .catch((err) => console.log(err));
+  .then(() => console.log('tables droped'))
+  .catch(err => console.log(err));
