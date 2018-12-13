@@ -6,7 +6,6 @@ import {
   updateProperty,
   deleteRecord,
   updateStatus,
-
 } from '../db/controller.queries';
 
 
