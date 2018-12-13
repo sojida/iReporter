@@ -1,8 +1,9 @@
 const locate_btn = document.getElementById('geoLocate')
 const location_field = document.getElementById('locateField')
+const locateMe = document.getElementById('locateme')
 
 
-locate_btn.addEventListener('click', (e) => {
+locate_btn.addEventListener('click', function(e){
     e.preventDefault()
     location_field.value = 'Locating...'
 
@@ -13,8 +14,7 @@ locate_btn.addEventListener('click', (e) => {
 
         const latlon = latitude + "," + longitude;
 
-
-        const map_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=16&size=400x300&sensor=false&key=AIzaSyABDhT6kOJ31VVKeNgM4ByXbyhFdj-09TM";
+        const map_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + latlon + "&zoom=16&size=400x300&sensor=false&key=AIzaSyBfGoLAjxxEj-4tLSYUR44z82dBmPv6SZQ";
 
         document.getElementById("map").innerHTML = `<img src=${map_url} alt='google map'>`;
 
@@ -47,31 +47,29 @@ locate_btn.addEventListener('click', (e) => {
 
 })
 
-    // google.maps.event.addDomListener(window, load, initialize)
 
-    // function initialize () {
-    //     const autocomplete = new google.maps.places.Autocomplete(location_field)
-
-    //     google.maps.event.addListener(autocomplete, 'place_changed', function(){
-
-    //         const places = autocomplete.getPlace();
-    //         let location = `<b>${places.geometry.location}</b>`
-
-    //         location_field.innerHTML = location
-    //     })
-
-    // }
-
-    const locateMe = document.getElementById('locateme')
-
-    console.log(locateMe)
 
 function locatePlaces () {
     
 
     const autocomplete = new google.maps.places.Autocomplete(locateMe)
-    console.log(autocomplete)
+
+    google.maps.event.addListener(autocomplete, 'place_changed', function(){
+        const places = autocomplete.getPlace();
+        const lat = places.geometry.location.lat();
+        const lng = places.geometry.location.lng();
+        
+        const location = `${lat.toFixed(6)},${lng.toFixed(6)}`
+        location_field.value = location;
+
+        const map_url = "https://maps.googleapis.com/maps/api/staticmap?center=" + location + "&zoom=16&size=400x300&sensor=false&key=AIzaSyBfGoLAjxxEj-4tLSYUR44z82dBmPv6SZQ";
+
+        document.getElementById("map").innerHTML = `<img src=${map_url} alt='google map'>`;
+
+    });
 }
+
+
 
    
 

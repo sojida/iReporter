@@ -52,7 +52,8 @@
                     <label >Location<br>
                         <div class="location">
                             <span id="geoLocate" class="btn3">Get This Location</span>
-                            <input type="text" name="location" class="inputField locate" id="locateField" placeholder="Or Insert Your coordinates">
+                            <input type="text" name="location" class="inputField locate" id="locateField" placeholder="Get this location or">
+                            <input type="text" name="area" id="locateme" class="inputField" placeholder="Input location" required><br>
                         </div>
                     </label><br>
                     <div id="map"></div>    
@@ -82,6 +83,7 @@
 	</footer>
 	
 <script src="./scripts/geolocation.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfGoLAjxxEj-4tLSYUR44z82dBmPv6SZQ&libraries=places&callback=locatePlaces" async defer></script>
 
 </body>
 </html>
