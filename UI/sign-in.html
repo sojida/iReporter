@@ -7,7 +7,7 @@
     <meta name="description" content="iReporter">
     <meta name="keywords" content="anti-corruption, intervention, report, witness, corruption">
     <meta name="author" content="Adesoji Daniel">
-    <title>iReporter | Sign Up</title>
+    <title>iReporter | Sign In</title>
     <link rel="stylesheet" type="text/css" href="./css/index.css">
     <link rel="stylesheet" href="./css/forms.css">
 </head>
@@ -34,10 +34,10 @@
            
             <div id="form-content">
                 <h1>Sign In </h1>
-                <form>
+                <form method="POST" id="login-form">
                     <input type="text" name="email" class="inputField" placeholder="Email" required><br>
                     <input type="password" name="password" class="inputField" placeholder="Password" required><br>
-                    <input type="submit" value="Sign In" class="btn2">
+                    <input type="submit" value="Sign In"  id= "login" class="btn2">
                 </form>
                 <p><b>If you don't have an account <a href="sign-up.html">Register here</a></b></p>
 
@@ -51,6 +51,6 @@
         <p>iReporter, Copyright &copy; 2018</p>
     </footer>
 
+    <script src="./scripts/login/admin.js"></script>
 </body>
-
 </html>
