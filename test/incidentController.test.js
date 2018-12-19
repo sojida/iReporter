@@ -174,7 +174,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].firstname).to.equal('firstname must be present');
+          expect(res.body.error[0].firstname).to.equal('firstname must be present');
           done();
         });
     });
@@ -225,7 +225,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].password).to.equal('password do not match');
+          expect(res.body.error[0].password2).to.equal('password do not match');
           done();
         });
     });
@@ -237,7 +237,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].password).to.equal('password can have uppercase, lowercase, numbers, "@" and "-" ');
+          expect(res.body.error[0].password).to.equal('password should be more than 8 characters and can have uppercase, lowercase, numbers, "@" and "-" ');
           done();
         });
     });
@@ -250,7 +250,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].email).to.equal('email is required');
+          expect(res.body.error[0].email).to.equal('email is required');
           done();
         });
     });
@@ -263,7 +263,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].email).to.equal('email must be valid format: yorname@mail.com');
+          expect(res.body.error[0].email).to.equal('email must be valid format: yorname@mail.com');
           done();
         });
     });
@@ -371,7 +371,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].type).to.equal('please use the right route');
+          expect(res.body.error[0].type).to.equal('please use the right route');
           done();
         });
     });
@@ -387,7 +387,7 @@ describe('ALLTEST', () => {
         .end((err, res) => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
-          expect(res.body.errors[0].type).to.equal('type can only be red-flag or intervention');
+          expect(res.body.error[0].type).to.equal('type can only be red-flag or intervention');
           done();
         });
     });
@@ -401,10 +401,10 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
 
-          const { errors } = res.body;
+          const { error } = res.body;
 
-          expect(errors[0].type).to.equal('type must be present');
-          expect(errors[1].title).to.equal('title must be present');
+          expect(error[0].type).to.equal('type must be present');
+          expect(error[1].title).to.equal('title must be present');
 
           done();
         });
@@ -419,10 +419,10 @@ describe('ALLTEST', () => {
           expect(res).to.have.status(400);
           expect(res.body.status).to.equal(400);
 
-          const { errors } = res.body;
-          expect(errors[0].type).to.equal('type must be present');
-          expect(errors[1].title).to.equal('title must be present');
-          expect(errors[2].comment).to.equal('comment must be present');
+          const { error } = res.body;
+          expect(error[0].type).to.equal('type must be present');
+          expect(error[1].title).to.equal('title must be present');
+          expect(error[2].comment).to.equal('comment must be present');
           done();
         });
     });
