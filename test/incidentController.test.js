@@ -473,6 +473,24 @@ describe('ALLTEST', () => {
           done();
         });
     });
+
+    it('should respond personal records', (done) => {
+      chai.request(server)
+        .get('/api/v1/myincidents')
+        .set('Authorization', token)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+
+          const { data } = res.body;
+
+          expect(res.body.error).to.equal('you need access');
+          expect(Array.isArray(data)).to.be.equal(true);
+          expect(res.body.status).to.be.equal(200);
+          expect(data[0]).to.contain.keys('id', 'type', 'status');
+          done();
+          done();
+        });
+    });
   });
 
   describe('GET RECORDS', () => {
