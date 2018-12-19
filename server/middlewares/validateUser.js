@@ -14,7 +14,7 @@ const { emailPattern } = {
 
 const validateUser = (req, res, next) => {
   let verified = true;
-  const errors = [];
+  const error = [];
 
   const {
     firstname, lastname, othernames, email, phoneNumber, username, password, password2,
@@ -22,48 +22,48 @@ const validateUser = (req, res, next) => {
 
   if (!firstname) {
     verified = false;
-    errors.push({ firstname: 'firstname must be present' });
+    error.push({ firstname: 'firstname must be present' });
   }
 
   if (!lastname) {
     verified = false;
-    errors.push({ lastname: 'lastname must be present' });
+    error.push({ lastname: 'lastname must be present' });
   }
 
   if (!othernames) {
     verified = false;
-    errors.push({ othernames: 'othernames must be present' });
+    error.push({ othernames: 'othernames must be present' });
   }
 
   if (!(emailPattern.test(email))) {
     verified = false;
-    errors.push({ email: 'email must be valid format: yorname@mail.com' });
+    error.push({ email: 'email must be valid format: yorname@mail.com' });
   }
 
   if (!(/^[\d]{11}$/.test(phoneNumber))) {
     verified = false;
-    errors.push({ phoneNumber: 'phone number must be valid' });
+    error.push({ phoneNumber: 'phone number must be valid' });
   }
 
   if (!username) {
     verified = false;
-    errors.push({ username: 'please insert a username' });
+    error.push({ username: 'please insert a username' });
   }
 
   if (!(/^[\w@-]{8,20}$/.test(password))) {
     verified = false;
-    errors.push({ password: 'password can have uppercase, lowercase, numbers, "@" and "-" ' });
+    error.push({ password: 'password should be more than 8 characters and can have uppercase, lowercase, numbers, "@" and "-" ' });
   }
 
   if (password !== password2) {
     verified = false;
-    errors.push({ password: 'password do not match' });
+    error.push({ password2: 'password do not match' });
   }
 
   if (!verified) {
     return res.status(400).json({
       status: 400,
-      errors,
+      error,
     });
   }
 
@@ -72,32 +72,32 @@ const validateUser = (req, res, next) => {
 
 const validateLogin = (req, res, next) => {
   let verified = true;
-  const errors = [];
+  const error = [];
 
   const { email, password } = req.body;
 
   if (!email) {
     verified = false;
-    errors.push({ email: 'email is required' });
+    error.push({ email: 'email is required' });
   }
 
   if (email) {
     if (!(emailPattern.test(email))) {
       verified = false;
-      errors.push({ email: 'email must be valid format: yorname@mail.com' });
+      error.push({ email: 'email must be valid format: yorname@mail.com' });
     }
   }
 
 
   if (!password) {
     verified = false;
-    errors.push({ password: 'password is required' });
+    error.push({ password: 'password is required' });
   }
 
   if (!verified) {
     return res.status(400).json({
       status: 400,
-      errors,
+      error,
     });
   }
 
@@ -110,7 +110,7 @@ async function isUserPresent(req, res, next) {
     req.body.email,
     req.body.username,
     req.body.phoneNumber,
-    ));
+  ));
 
   if (rows.length) {
     if (rows[0].email === req.body.email) {
