@@ -483,11 +483,9 @@ describe('ALLTEST', () => {
 
           const { data } = res.body;
 
-          expect(res.body.error).to.equal('you need access');
           expect(Array.isArray(data)).to.be.equal(true);
           expect(res.body.status).to.be.equal(200);
           expect(data[0]).to.contain.keys('id', 'type', 'status');
-          done();
           done();
         });
     });
