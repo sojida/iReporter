@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 
 app.use(cors({
   credentials: true,
-  methods: ['GET', 'PATCH', 'POST'],
+  methods: ['GET', 'PATCH', 'POST', 'DELETE'],
 }));
 
 
