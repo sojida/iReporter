@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import db from '../db/db';
-import { getById, status } from '../db/controller.queries';
+import { getById, status, myRecord } from '../db/controller.queries';
 
 
 dotenv.config();
@@ -57,6 +57,10 @@ const validateRoute = (req, res, next) => {
   }
 
   if (type[1] === 'incidents') {
+    type = 'incidents';
+  }
+
+  if (type[1] === 'myincidents') {
     type = 'incidents';
   }
 
@@ -150,6 +154,21 @@ const validateParams = (req, res, next) => {
 };
 
 
+async function myStatus(req, res, next) {
+  if (!req.data) {
+    return res.status(403).json({
+      status: 403,
+      error: 'No user found',
+    });
+  }
+
+
+  const { rows } = await db.query(myRecord(req.data));
+
+  req.info = rows;
+  next();
+}
+
 module.exports = {
   verifyToken,
   isAdmin,
@@ -157,4 +176,5 @@ module.exports = {
   checkStatus,
   validateRoute,
   validateParams,
+  myStatus,
 };

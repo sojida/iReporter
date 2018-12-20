@@ -46,6 +46,11 @@ const checkUser = (email, username, phoneNumber) => ({
   values: [email, username, phoneNumber],
 });
 
+const myRecord = (id) => ({
+  text: 'SELECT * FROM incidents WHERE createdby = $1',
+  values: [id],
+})
+
 module.exports = {
   getAllIncidents,
   createRecord,
@@ -57,4 +62,5 @@ module.exports = {
   createUser,
   updateStatus,
   checkUser,
+  myRecord,
 };

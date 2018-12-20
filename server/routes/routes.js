@@ -8,6 +8,7 @@ import {
   checkStatus,
   validateRoute,
   validateParams,
+  myStatus,
 } from '../middlewares/auth';
 
 import {
@@ -24,6 +25,7 @@ router.use(validateRoute, validateParams, verifyToken);
 
 // get all incidents
 router.get('/incidents', incidents.getIncidents);
+router.get('/myincidents', myStatus, incidents.getMyIncidents);
 
 // Red flags
 router.get('/red-flags', incidents.getReportType);

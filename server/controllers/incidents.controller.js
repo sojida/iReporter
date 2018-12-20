@@ -17,6 +17,13 @@ async function getIncidents(req, res) {
   });
 }
 
+const getMyIncidents = (req, res) => {
+  res.status(200).json({
+    status: 200,
+    data: [...req.info],
+  })
+}
+
 async function postRecord(req, res) {
   const { rows } = await db.query(createRecord(req.body.type, req.data, 'now', req.body.status, req.body.comment, req.body.title, req.body.images, req.body.videos, req.body.location));
   res.status(201).json({
@@ -94,4 +101,5 @@ module.exports = {
   patchComment,
   deleteReport,
   changeStatus,
+  getMyIncidents,
 };
