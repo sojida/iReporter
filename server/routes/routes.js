@@ -18,6 +18,8 @@ import {
   validateStatus,
 } from '../middlewares/validation';
 
+import handlemedia from '../middlewares/media';
+import saveMedia from '../db/media.db';
 
 const router = express.Router();
 
@@ -30,7 +32,7 @@ router.get('/myincidents', myStatus, incidents.getMyIncidents);
 // Red flags
 router.get('/red-flags', incidents.getReportType);
 router.get('/red-flags/:id', isPresent, incidents.getReport);
-router.post('/red-flags', validatePost, incidents.postRecord);
+router.post('/red-flags', handlemedia, validatePost, saveMedia, incidents.postRecord);
 router.patch('/red-flags/:id/location', validateLocation, checkStatus, incidents.patchLocation);
 router.patch('/red-flags/:id/comment', validateComment, checkStatus, incidents.patchComment);
 router.delete('/red-flags/:id', checkStatus, incidents.deleteReport);
@@ -38,7 +40,7 @@ router.delete('/red-flags/:id', checkStatus, incidents.deleteReport);
 // Interventions
 router.get('/interventions', incidents.getReportType);
 router.get('/interventions/:id', isPresent, incidents.getReport);
-router.post('/interventions', validatePost, incidents.postRecord);
+router.post('/interventions', handlemedia, validatePost, saveMedia, incidents.postRecord);
 router.patch('/interventions/:id/location', validateLocation, checkStatus, incidents.patchLocation);
 router.patch('/interventions/:id/comment', validateComment, checkStatus, incidents.patchComment);
 router.delete('/interventions/:id', checkStatus, incidents.deleteReport);
